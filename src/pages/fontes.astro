@@ -2,6 +2,7 @@
 import Base from '@/layouts/Base.astro';
 import fontes from '@/data/referencias.json';
 import Icon from '@/components/ui/Icon.astro';
+import { L, REPO_LEIS } from '@/data/links';
 ---
 <Base title="Fontes e referências" description="As 80 referências usadas na pesquisa que originou este site.">
   <section class="rounded-[2rem] border border-sky-300 bg-sky-50 p-6 sm:p-10">
@@ -10,6 +11,20 @@ import Icon from '@/components/ui/Icon.astro';
     <label class="mt-5 block max-w-md text-sm font-bold">Buscar
       <input id="q" type="search" placeholder="ex.: TSE, cláusula, Abranches…" class="mt-1 w-full rounded-full border border-line bg-white px-5 py-3 text-base" />
     </label>
+  </section>
+
+  <section class="mt-8 rounded-3xl border border-sky-300 bg-white p-6">
+    <h2 class="flex items-center gap-2 text-2xl font-bold"><Icon name="markdown" class="text-sky-600" /> Repositório de apoio: ctresb/leis</h2>
+    <p class="prose-p mt-3 max-w-3xl">O repositório <a class="font-bold underline" href={REPO_LEIS} target="_blank" rel="noopener noreferrer">ctresb/leis</a> reúne a legislação brasileira em Markdown: a Constituição Federal, leis federais, estaduais e municipais, tratados e decisões do STF. Cada arquivo traz um cabeçalho com o link da fonte oficial.</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">
+      <li>Neste site, os links “Markdown” aparecem ao lado das fontes oficiais (por exemplo, a Constituição e as leis eleitorais).</li>
+      <li>O próprio repositório avisa que os textos são <strong>conversões automáticas</strong> (com OCR em documentos escaneados) e <strong>não substituem o Diário Oficial</strong>. Por isso, ele é tratado aqui como fonte de apoio, e a fonte oficial vem sempre primeiro.</li>
+      <li>O código do repositório usa a licença MIT. Os textos das normas são atos oficiais, que não têm proteção autoral (Lei nº 9.610/1998, art. 8º, I).</li>
+    </ul>
+    <div class="mt-4 flex flex-wrap gap-2 text-sm">
+      <a class="btn" href={REPO_LEIS} target="_blank" rel="noopener noreferrer"><Icon name="open_in_new" /> Abrir o repositório</a>
+      <a class="btn" href={L.cf.md} target="_blank" rel="noopener noreferrer"><Icon name="menu_book" /> Constituição em Markdown</a>
+    </div>
   </section>
 
   <p class="mt-6 text-sm text-ink-soft" id="n" aria-live="polite"></p>

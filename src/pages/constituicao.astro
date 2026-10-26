@@ -60,6 +60,19 @@ import { pilares, fundamentos, pecs } from '@/data/paginas/constituicao';
       </div>
     </Section>
 
+    <Section title="Leia o texto completo">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <a href={L.cf.url} target="_blank" rel="noopener noreferrer" class="card flex items-center gap-3 transition hover:-translate-y-0.5">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-lilac-100 text-2xl text-lilac-600"><Icon name="account_balance" /></span>
+          <span><span class="block font-bold">Texto oficial (Planalto)</span><span class="text-sm text-ink-soft">Constituição compilada, com todas as emendas.</span></span>
+        </a>
+        <a href={L.cf.md} target="_blank" rel="noopener noreferrer" class="card flex items-center gap-3 transition hover:-translate-y-0.5">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-sky-100 text-2xl text-sky-600"><Icon name="markdown" /></span>
+          <span><span class="block font-bold">Texto em Markdown</span><span class="text-sm text-ink-soft">Mesma Constituição em texto simples, no repositório ctresb/leis. Útil para buscar e copiar trechos.</span></span>
+        </a>
+      </div>
+    </Section>
+
     <Fonte itens={[art(1), art(2), art(18), L.cf, L.senadoGuia]} />
   </LevelBlock>
 

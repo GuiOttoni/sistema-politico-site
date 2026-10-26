@@ -72,6 +72,15 @@ No Netlify, escolha **Add new site → Import an existing project**, conecte est
 - Toda informação factual deve ter fonte. Prefira o texto oficial (Constituição no Planalto, leis, STF, CNJ, TCU, TSE).
 - O que não puder ser confirmado deve aparecer como “não confirmado” em `validacao.ts`.
 
+## Repositório de apoio: ctresb/leis
+
+O site usa o repositório [ctresb/leis](https://github.com/ctresb/leis) como fonte de apoio: ele reúne a legislação brasileira em Markdown (Constituição, leis, tratados e decisões do STF), com o link da fonte oficial em cada arquivo.
+
+- Nos blocos de fontes de cada etapa, o link oficial (Planalto, STF etc.) vem primeiro. Ao lado dele, quando existe, aparece o link **Markdown** para o mesmo texto no repositório.
+- Os endereços ficam em `src/data/links.ts`: use `md('caminho/no/repositorio.md')` como terceiro argumento de `o(...)` para ligar uma fonte oficial ao seu texto em Markdown.
+- O repositório avisa que os textos são conversões automáticas e não substituem o Diário Oficial. Por isso ele é tratado como apoio, nunca como fonte principal.
+- A conferência do número das ADIs sobre as sobras eleitorais (7.228, 7.263 e 7.325) usou o ementário do STF reproduzido nesse repositório.
+
 ## Observação sobre links do TSE
 
 Os endereços de `tse.jus.br` bloqueiam acesso automatizado (HTTP 403), mas abrem normalmente em navegadores.

@@ -1,22 +1,29 @@
 ---
 import Icon from '@/components/ui/Icon.astro';
-import type { Link } from '@/data/links';
+import { REPO_LEIS, type Link } from '@/data/links';
 interface Props { itens: Link[]; titulo?: string }
 const { itens, titulo = 'Fontes e conferência' } = Astro.props;
+const temMd = itens.some((i) => i.md);
 ---
 <aside class="mt-8 rounded-3xl border border-line bg-white/80 p-5" aria-label={titulo}>
   <p class="flex items-center gap-2 text-sm font-extrabold text-ink"><Icon name="verified" class="text-mint-600" /> {titulo}</p>
   <ul class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
     {itens.map((i) => (
-      <li class="flex items-start gap-2">
-        <Icon name={i.oficial ? 'account_balance' : 'article'} class={i.oficial ? 'text-lilac-600' : 'text-ink-soft'} />
-        <a href={i.url} target="_blank" rel="noopener noreferrer" class="underline decoration-line underline-offset-4 hover:text-lilac-600">{i.rotulo}</a>
-        <span class="sr-only">{i.oficial ? '(fonte oficial)' : '(fonte de apoio)'}</span>
+      <li class="flex flex-wrap items-start gap-x-2">
+        <Icon name={i.tipo === 'oficial' ? 'account_balance' : 'article'} class={i.tipo === 'oficial' ? 'text-lilac-600' : 'text-ink-soft'} />
+        <a href={i.url} target="_blank" rel="noopener noreferrer" class="flex-1 underline decoration-line underline-offset-4 hover:text-lilac-600">{i.rotulo}</a>
+        <span class="sr-only">{i.tipo === 'oficial' ? '(fonte oficial)' : '(fonte de apoio)'}</span>
+        {i.md && (
+          <a href={i.md} target="_blank" rel="noopener noreferrer" class="chip bg-sky-50 !py-0.5 text-sky-600 hover:bg-sky-100" title="Mesmo texto em Markdown, no repositório ctresb/leis">
+            <Icon name="markdown" /> Markdown
+          </a>
+        )}
       </li>
     ))}
   </ul>
   <p class="mt-3 text-xs text-ink-soft">
     <Icon name="account_balance" class="text-lilac-600" /> fonte oficial do Poder público
-    · <Icon name="article" /> fonte de apoio (imprensa ou artigo acadêmico)
+    · <Icon name="article" /> fonte de apoio (imprensa, artigo acadêmico ou repositório)
+    {temMd && <span> · <Icon name="markdown" class="text-sky-600" /> o mesmo texto em Markdown, no repositório <a class="underline" href={REPO_LEIS} target="_blank" rel="noopener noreferrer">ctresb/leis</a> (conversão automática; confira sempre o texto oficial)</span>}
   </p>
 </aside>

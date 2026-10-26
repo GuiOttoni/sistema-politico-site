@@ -33,7 +33,7 @@ const contagem = (s: Status) => itens.filter((i) => i.status === s).length;
           {i.nota && <p class="mt-1 text-sm text-ink-soft">{i.nota}</p>}
           <ul class="mt-3 flex flex-wrap gap-2 text-sm">
             {i.fonte.map((f) => (
-              <li><a href={f.url} target="_blank" rel="noopener noreferrer" class="chip bg-lilac-50 text-lilac-600 hover:bg-lilac-100"><Icon name={f.oficial ? 'account_balance' : 'article'} /> {f.rotulo} <Icon name="open_in_new" /></a></li>
+              <li><a href={f.url} target="_blank" rel="noopener noreferrer" class="chip bg-lilac-50 text-lilac-600 hover:bg-lilac-100"><Icon name={f.tipo === 'oficial' ? 'account_balance' : 'article'} /> {f.rotulo} <Icon name="open_in_new" /></a></li>
             ))}
           </ul>
         </li>
