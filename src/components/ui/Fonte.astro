@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
-import type { Link } from '../data/links';
+import Icon from '@/components/ui/Icon.astro';
+import type { Link } from '@/data/links';
 interface Props { itens: Link[]; titulo?: string }
 const { itens, titulo = 'Fontes e conferência' } = Astro.props;
 ---

@@ -1,5 +1,5 @@
 {
-  "name": "sistema-politico-brasil",
+  "name": "sistema-politico-site",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -13,5 +13,13 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
     "tailwindcss": "^4.3.3"
+  },
+  "description": "Guia interativo e didático sobre o sistema político brasileiro, do básico ao avançado.",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuiOttoni/sistema-politico-site.git"
   }
 }

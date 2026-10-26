@@ -1,86 +1,16 @@
 ---
-import Base from '../layouts/Base.astro';
-import PageHeader from '../components/PageHeader.astro';
-import PageNav from '../components/PageNav.astro';
-import LevelBlock from '../components/LevelBlock.astro';
-import Section from '../components/Section.astro';
-import Callout from '../components/Callout.astro';
-import InfoCard from '../components/InfoCard.astro';
-import Icon from '../components/Icon.astro';
-import Fonte from '../components/Fonte.astro';
-import Quiz from '../components/Quiz.astro';
-import { art, L } from '../data/links';
-
-type Papel = 'principal' | 'apoio' | 'nenhum';
-interface Demanda {
-  id: string; icon: string; titulo: string; tipo: string; artigo: string;
-  uniao: Papel; estado: Papel; df: Papel; municipio: Papel; texto: string;
-  cobrar: { executar: string; legislar: string };
-}
-
-const demandas: Demanda[] = [
-  { id: 'transporte', icon: 'directions_bus', titulo: 'Ônibus e transporte coletivo urbano', tipo: 'Assunto local', artigo: 'Art. 30, V',
-    uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
-    texto: 'Organizar e prestar o transporte coletivo de caráter essencial é tarefa do Município. O Distrito Federal reúne as competências de Estado e de Município (art. 32, § 1º).',
-    cobrar: { executar: 'Prefeito (no Distrito Federal, o governador). É quem organiza as linhas e fiscaliza o serviço.', legislar: 'Vereadores (no DF, deputados distritais), para mudar regras do transporte ou fiscalizar a Prefeitura.' } },
-  { id: 'creche', icon: 'child_care', titulo: 'Creche e ensino fundamental', tipo: 'Tarefa do Município, com apoio', artigo: 'Art. 30, VI',
-    uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
-    texto: 'O Município mantém a educação infantil e o ensino fundamental, com apoio técnico e financeiro da União e do Estado.',
-    cobrar: { executar: 'Prefeito e a Secretaria Municipal de Educação, que mantêm creches e escolas de ensino fundamental.', legislar: 'Vereadores, que votam o orçamento do Município e fiscalizam a Prefeitura.' } },
-  { id: 'saude', icon: 'local_hospital', titulo: 'Posto de saúde (atenção básica)', tipo: 'Tarefa comum + local', artigo: 'Arts. 23, II e 30, VII',
-    uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
-    texto: 'Cuidar da saúde é tarefa comum dos quatro entes (art. 23). Na ponta, o atendimento à população é prestado pelo Município, com apoio da União e do Estado.',
-    cobrar: { executar: 'Prefeito, para o atendimento no posto de saúde. Governador e Presidente também respondem, porque apoiam e financiam a saúde.', legislar: 'Vereadores (assuntos locais) e deputados estaduais e federais (leis e orçamento de saúde).' } },
-  { id: 'policia', icon: 'local_police', titulo: 'Polícia Militar e Polícia Civil', tipo: 'Estadual', artigo: 'Art. 144, § 6º',
-    uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
-    texto: 'As polícias civis e militares são subordinadas ao governador do Estado ou do Distrito Federal.',
-    cobrar: { executar: 'Governador, a quem as polícias Civil e Militar são subordinadas.', legislar: 'Deputados estaduais, que fazem as leis do Estado e fiscalizam o governador.' } },
-  { id: 'gas', icon: 'local_fire_department', titulo: 'Gás encanado', tipo: 'Estadual (expressa)', artigo: 'Art. 25, § 2º',
-    uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
-    texto: 'Cabe ao Estado explorar, diretamente ou por concessão, os serviços locais de gás canalizado. A Constituição proíbe usar Medida Provisória para regulamentar esse tema.',
-    cobrar: { executar: 'Governador, responsável pelo serviço de gás canalizado no Estado.', legislar: 'Deputados estaduais.' } },
-  { id: 'penal', icon: 'block', titulo: 'Criar crimes (direito penal)', tipo: 'Lei privativa da União', artigo: 'Art. 22, I',
-    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'Só a União faz leis de direito penal, civil, comercial, eleitoral, do trabalho e outras. Estados e Municípios não podem criar crimes.',
-    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores, que votam as leis. O Presidente também participa, pois sanciona ou veta.' } },
-  { id: 'trabalho', icon: 'engineering', titulo: 'Leis trabalhistas', tipo: 'Lei privativa da União', artigo: 'Art. 22, I',
-    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'O direito do trabalho é matéria privativa da União. Uma lei complementar federal pode autorizar os Estados a legislar sobre pontos específicos (parágrafo único do art. 22).',
-    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores. O Presidente sanciona ou veta.' } },
-  { id: 'seguros', icon: 'verified_user', titulo: 'Contratos de seguro', tipo: 'Lei privativa da União', artigo: 'Art. 22, VII',
-    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'A política de seguros é da União. Um Estado não pode regular contratos de seguro, nem a pretexto de proteger o consumidor.',
-    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores. O Presidente sanciona ou veta.' } },
-  { id: 'moeda', icon: 'payments', titulo: 'Emitir moeda', tipo: 'Tarefa exclusiva da União', artigo: 'Art. 21, VII',
-    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'As tarefas do art. 21, como emitir moeda, organizar a defesa nacional e manter relações com outros países, são exclusivas da União e não podem ser delegadas.',
-    cobrar: { executar: 'Presidente da República, que dirige a administração federal.', legislar: 'Deputados federais e senadores, que fazem as leis e fiscalizam o governo federal.' } },
-  { id: 'exterior', icon: 'public', titulo: 'Relações com outros países', tipo: 'Tarefa exclusiva da União', artigo: 'Art. 21, I',
-    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'Somente a República Federativa do Brasil tem soberania internacional. Estados e Municípios têm autonomia, mas não soberania.',
-    cobrar: { executar: 'Presidente da República, que conduz as relações internacionais.', legislar: 'Senadores e deputados federais. O Congresso decide sobre tratados internacionais.' } },
-  { id: 'comercio', icon: 'storefront', titulo: 'Horário do comércio local', tipo: 'Assunto local', artigo: 'Art. 30, I',
-    uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
-    texto: 'Assuntos de interesse local, como o horário de funcionamento do comércio urbano, são decididos pelo Município.',
-    cobrar: { executar: 'Prefeito, que fiscaliza o cumprimento das regras no comércio.', legislar: 'Vereadores, que votam a lei local sobre horários.' } },
-  { id: 'ambiente', icon: 'park', titulo: 'Proteção do meio ambiente', tipo: 'Tarefa comum + lei concorrente', artigo: 'Arts. 23, 24 e 225',
-    uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'principal',
-    texto: 'Todos os entes protegem o meio ambiente (art. 23). União, Estados e DF fazem leis em conjunto (art. 24). O Município pode complementá-las para assuntos locais (art. 30, I e II). A Lei Complementar nº 140/2011 organiza a cooperação no licenciamento e na fiscalização.',
-    cobrar: { executar: 'Prefeito, governador e Presidente, de acordo com o alcance do problema (local, estadual ou nacional).', legislar: 'Vereadores, deputados estaduais e deputados federais e senadores, conforme a lei que precisa mudar.' } },
-  { id: 'consumo', icon: 'shopping_cart', titulo: 'Leis de proteção ao consumidor', tipo: 'Lei concorrente', artigo: 'Art. 24, VIII',
-    uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'apoio',
-    texto: 'A União edita as normas gerais e os Estados e o DF as complementam. O Município pode legislar sobre o interesse local (art. 30, I e II).',
-    cobrar: { executar: 'Prefeito e governador, que mantêm órgãos de fiscalização.', legislar: 'Deputados federais e senadores (normas gerais), deputados estaduais e vereadores (normas complementares).' } },
-];
-
-const tipos = [
-  { icon: 'lock', tag: 'Art. 21', titulo: 'Tarefa exclusiva (União)', tone: 'lilac' as const, txt: 'Tarefas que só a União executa e não pode delegar: moeda, defesa nacional, relações exteriores.' },
-  { icon: 'edit', tag: 'Art. 22', titulo: 'Lei privativa (União)', tone: 'sky' as const, txt: 'Só a União faz essas leis: civil, penal, trabalho, eleitoral e outras. Lei complementar pode delegar pontos aos Estados.' },
-  { icon: 'handshake', tag: 'Art. 23', titulo: 'Tarefa comum (todos)', tone: 'mint' as const, txt: 'Saúde, meio ambiente, patrimônio histórico e combate à pobreza: os quatro entes atuam juntos (federalismo cooperativo).' },
-  { icon: 'splitscreen', tag: 'Art. 24', titulo: 'Lei concorrente', tone: 'peach' as const, txt: 'União, Estados e DF legislam juntos. A União fixa normas gerais e os Estados as complementam.' },
-  { icon: 'explore', tag: 'Art. 25, § 1º', titulo: 'Competência residual (Estados)', tone: 'butter' as const, txt: 'Tudo o que a Constituição não proíbe aos Estados fica com eles.' },
-  { icon: 'home_work', tag: 'Art. 30', titulo: 'Competência municipal', tone: 'rose' as const, txt: 'Assuntos de interesse local (inciso I) e complementação da legislação federal e estadual (inciso II).' },
-];
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import PageNav from '@/components/layout/PageNav.astro';
+import LevelBlock from '@/components/layout/LevelBlock.astro';
+import Section from '@/components/ui/Section.astro';
+import Callout from '@/components/ui/Callout.astro';
+import InfoCard from '@/components/ui/InfoCard.astro';
+import Icon from '@/components/ui/Icon.astro';
+import Fonte from '@/components/ui/Fonte.astro';
+import Quiz from '@/components/ui/Quiz.astro';
+import { art, L } from '@/data/links';
+import { demandas, tipos } from '@/data/paginas/federacao';
 ---
 <Base title="Quem faz o quê?" slug="federacao">
   <PageHeader slug="federacao" />

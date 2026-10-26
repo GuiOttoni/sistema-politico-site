@@ -1,7 +1,7 @@
 ---
-import '../styles/global.css';
-import { trilha, href } from '../data/trilha';
-import Icon from '../components/Icon.astro';
+import '@/styles/global.css';
+import { trilha, href } from '@/data/trilha';
+import Icon from '@/components/ui/Icon.astro';
 
 interface Props { title: string; description?: string; slug?: string }
 const { title, description = 'Guia interativo e didático do sistema político brasileiro: do básico ao avançado.', slug = '' } = Astro.props;

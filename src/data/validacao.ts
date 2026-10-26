@@ -1,4 +1,4 @@
-import { art, L, type Link } from './links';
+import { art, L, type Link } from '@/data/links';
 
 export type Status = 'confirmado' | 'corrigido' | 'pendente';
 

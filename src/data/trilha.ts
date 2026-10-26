@@ -1,4 +1,4 @@
-import type { Tone } from '../lib/tones';
+import type { Tone } from '@/lib/tones';
 
 export interface Etapa {
   slug: string;

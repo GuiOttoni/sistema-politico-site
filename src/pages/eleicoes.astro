@@ -1,14 +1,14 @@
 ---
-import Base from '../layouts/Base.astro';
-import PageHeader from '../components/PageHeader.astro';
-import PageNav from '../components/PageNav.astro';
-import LevelBlock from '../components/LevelBlock.astro';
-import Section from '../components/Section.astro';
-import Callout from '../components/Callout.astro';
-import Icon from '../components/Icon.astro';
-import Fonte from '../components/Fonte.astro';
-import Quiz from '../components/Quiz.astro';
-import { art, L } from '../data/links';
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import PageNav from '@/components/layout/PageNav.astro';
+import LevelBlock from '@/components/layout/LevelBlock.astro';
+import Section from '@/components/ui/Section.astro';
+import Callout from '@/components/ui/Callout.astro';
+import Icon from '@/components/ui/Icon.astro';
+import Fonte from '@/components/ui/Fonte.astro';
+import Quiz from '@/components/ui/Quiz.astro';
+import { art, L } from '@/data/links';
 ---
 <Base title="Como o voto vira cadeira" slug="eleicoes">
   <PageHeader slug="eleicoes" />
@@ -105,7 +105,7 @@ import { art, L } from '../data/links';
   <PageNav slug="eleicoes" />
 
   <script>
-    import { distribuirCadeiras } from '../lib/eleitoral.js';
+    import { distribuirCadeiras } from '@/lib/eleitoral.js';
 
     const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
     const fmt = new Intl.NumberFormat('pt-BR');

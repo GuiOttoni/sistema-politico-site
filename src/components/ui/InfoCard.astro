@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
-import { tones, type Tone } from '../lib/tones';
+import Icon from '@/components/ui/Icon.astro';
+import { tones, type Tone } from '@/lib/tones';
 interface Props { tone?: Tone; icon?: string; title: string; tag?: string }
 const { tone = 'lilac', icon = 'info', title, tag } = Astro.props;
 const t = tones[tone];

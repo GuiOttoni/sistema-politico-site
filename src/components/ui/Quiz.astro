@@ -1,5 +1,5 @@
 ---
-import Icon from './Icon.astro';
+import Icon from '@/components/ui/Icon.astro';
 export interface Pergunta { q: string; opcoes: string[]; certa: number; porque: string }
 interface Props { perguntas: Pergunta[]; titulo?: string; id?: string }
 const { perguntas, titulo = 'Teste seus conhecimentos', id } = Astro.props;

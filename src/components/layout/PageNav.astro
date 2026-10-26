@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
-import { trilha, href } from '../data/trilha';
+import Icon from '@/components/ui/Icon.astro';
+import { trilha, href } from '@/data/trilha';
 interface Props { slug: string }
 const { slug } = Astro.props;
 const i = trilha.findIndex((e) => e.slug === slug);

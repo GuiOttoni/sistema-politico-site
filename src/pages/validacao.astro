@@ -1,7 +1,7 @@
 ---
-import Base from '../layouts/Base.astro';
-import Icon from '../components/Icon.astro';
-import { itens, dataConferencia, type Status } from '../data/validacao';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { itens, dataConferencia, type Status } from '@/data/validacao';
 
 const meta: Record<Status, { nome: string; icon: string; chip: string; borda: string }> = {
   confirmado: { nome: 'Confirmado', icon: 'check_circle', chip: 'bg-mint-100 text-mint-600', borda: 'border-mint-300' },
