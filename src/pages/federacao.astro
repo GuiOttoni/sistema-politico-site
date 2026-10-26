@@ -15,48 +15,62 @@ type Papel = 'principal' | 'apoio' | 'nenhum';
 interface Demanda {
   id: string; icon: string; titulo: string; tipo: string; artigo: string;
   uniao: Papel; estado: Papel; df: Papel; municipio: Papel; texto: string;
+  cobrar: { executar: string; legislar: string };
 }
 
 const demandas: Demanda[] = [
   { id: 'transporte', icon: 'directions_bus', titulo: 'Ônibus e transporte coletivo urbano', tipo: 'Assunto local', artigo: 'Art. 30, V',
     uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
-    texto: 'Organizar e prestar o transporte coletivo de caráter essencial é tarefa do Município. O Distrito Federal reúne as competências de Estado e de Município (art. 32, § 1º).' },
+    texto: 'Organizar e prestar o transporte coletivo de caráter essencial é tarefa do Município. O Distrito Federal reúne as competências de Estado e de Município (art. 32, § 1º).',
+    cobrar: { executar: 'Prefeito (no Distrito Federal, o governador). É quem organiza as linhas e fiscaliza o serviço.', legislar: 'Vereadores (no DF, deputados distritais), para mudar regras do transporte ou fiscalizar a Prefeitura.' } },
   { id: 'creche', icon: 'child_care', titulo: 'Creche e ensino fundamental', tipo: 'Tarefa do Município, com apoio', artigo: 'Art. 30, VI',
     uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
-    texto: 'O Município mantém a educação infantil e o ensino fundamental, com apoio técnico e financeiro da União e do Estado.' },
+    texto: 'O Município mantém a educação infantil e o ensino fundamental, com apoio técnico e financeiro da União e do Estado.',
+    cobrar: { executar: 'Prefeito e a Secretaria Municipal de Educação, que mantêm creches e escolas de ensino fundamental.', legislar: 'Vereadores, que votam o orçamento do Município e fiscalizam a Prefeitura.' } },
   { id: 'saude', icon: 'local_hospital', titulo: 'Posto de saúde (atenção básica)', tipo: 'Tarefa comum + local', artigo: 'Arts. 23, II e 30, VII',
     uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
-    texto: 'Cuidar da saúde é tarefa comum dos quatro entes (art. 23). Na ponta, o atendimento à população é prestado pelo Município, com apoio da União e do Estado.' },
+    texto: 'Cuidar da saúde é tarefa comum dos quatro entes (art. 23). Na ponta, o atendimento à população é prestado pelo Município, com apoio da União e do Estado.',
+    cobrar: { executar: 'Prefeito, para o atendimento no posto de saúde. Governador e Presidente também respondem, porque apoiam e financiam a saúde.', legislar: 'Vereadores (assuntos locais) e deputados estaduais e federais (leis e orçamento de saúde).' } },
   { id: 'policia', icon: 'local_police', titulo: 'Polícia Militar e Polícia Civil', tipo: 'Estadual', artigo: 'Art. 144, § 6º',
     uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
-    texto: 'As polícias civis e militares são subordinadas ao governador do Estado ou do Distrito Federal.' },
+    texto: 'As polícias civis e militares são subordinadas ao governador do Estado ou do Distrito Federal.',
+    cobrar: { executar: 'Governador, a quem as polícias Civil e Militar são subordinadas.', legislar: 'Deputados estaduais, que fazem as leis do Estado e fiscalizam o governador.' } },
   { id: 'gas', icon: 'local_fire_department', titulo: 'Gás encanado', tipo: 'Estadual (expressa)', artigo: 'Art. 25, § 2º',
     uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
-    texto: 'Cabe ao Estado explorar, diretamente ou por concessão, os serviços locais de gás canalizado. A Constituição proíbe usar Medida Provisória para regulamentar esse tema.' },
+    texto: 'Cabe ao Estado explorar, diretamente ou por concessão, os serviços locais de gás canalizado. A Constituição proíbe usar Medida Provisória para regulamentar esse tema.',
+    cobrar: { executar: 'Governador, responsável pelo serviço de gás canalizado no Estado.', legislar: 'Deputados estaduais.' } },
   { id: 'penal', icon: 'block', titulo: 'Criar crimes (direito penal)', tipo: 'Lei privativa da União', artigo: 'Art. 22, I',
     uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'Só a União faz leis de direito penal, civil, comercial, eleitoral, do trabalho e outras. Estados e Municípios não podem criar crimes.' },
+    texto: 'Só a União faz leis de direito penal, civil, comercial, eleitoral, do trabalho e outras. Estados e Municípios não podem criar crimes.',
+    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores, que votam as leis. O Presidente também participa, pois sanciona ou veta.' } },
   { id: 'trabalho', icon: 'engineering', titulo: 'Leis trabalhistas', tipo: 'Lei privativa da União', artigo: 'Art. 22, I',
     uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'O direito do trabalho é matéria privativa da União. Uma lei complementar federal pode autorizar os Estados a legislar sobre pontos específicos (parágrafo único do art. 22).' },
+    texto: 'O direito do trabalho é matéria privativa da União. Uma lei complementar federal pode autorizar os Estados a legislar sobre pontos específicos (parágrafo único do art. 22).',
+    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores. O Presidente sanciona ou veta.' } },
   { id: 'seguros', icon: 'verified_user', titulo: 'Contratos de seguro', tipo: 'Lei privativa da União', artigo: 'Art. 22, VII',
     uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'A política de seguros é da União. Um Estado não pode regular contratos de seguro, nem a pretexto de proteger o consumidor.' },
+    texto: 'A política de seguros é da União. Um Estado não pode regular contratos de seguro, nem a pretexto de proteger o consumidor.',
+    cobrar: { executar: 'Não há serviço a cobrar: trata-se de uma lei.', legislar: 'Deputados federais e senadores. O Presidente sanciona ou veta.' } },
   { id: 'moeda', icon: 'payments', titulo: 'Emitir moeda', tipo: 'Tarefa exclusiva da União', artigo: 'Art. 21, VII',
     uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'As tarefas do art. 21, como emitir moeda, organizar a defesa nacional e manter relações com outros países, são exclusivas da União e não podem ser delegadas.' },
+    texto: 'As tarefas do art. 21, como emitir moeda, organizar a defesa nacional e manter relações com outros países, são exclusivas da União e não podem ser delegadas.',
+    cobrar: { executar: 'Presidente da República, que dirige a administração federal.', legislar: 'Deputados federais e senadores, que fazem as leis e fiscalizam o governo federal.' } },
   { id: 'exterior', icon: 'public', titulo: 'Relações com outros países', tipo: 'Tarefa exclusiva da União', artigo: 'Art. 21, I',
     uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
-    texto: 'Somente a República Federativa do Brasil tem soberania internacional. Estados e Municípios têm autonomia, mas não soberania.' },
+    texto: 'Somente a República Federativa do Brasil tem soberania internacional. Estados e Municípios têm autonomia, mas não soberania.',
+    cobrar: { executar: 'Presidente da República, que conduz as relações internacionais.', legislar: 'Senadores e deputados federais. O Congresso decide sobre tratados internacionais.' } },
   { id: 'comercio', icon: 'storefront', titulo: 'Horário do comércio local', tipo: 'Assunto local', artigo: 'Art. 30, I',
     uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
-    texto: 'Assuntos de interesse local, como o horário de funcionamento do comércio urbano, são decididos pelo Município.' },
+    texto: 'Assuntos de interesse local, como o horário de funcionamento do comércio urbano, são decididos pelo Município.',
+    cobrar: { executar: 'Prefeito, que fiscaliza o cumprimento das regras no comércio.', legislar: 'Vereadores, que votam a lei local sobre horários.' } },
   { id: 'ambiente', icon: 'park', titulo: 'Proteção do meio ambiente', tipo: 'Tarefa comum + lei concorrente', artigo: 'Arts. 23, 24 e 225',
     uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'principal',
-    texto: 'Todos os entes protegem o meio ambiente (art. 23). União, Estados e DF fazem leis em conjunto (art. 24). O Município pode complementá-las para assuntos locais (art. 30, I e II). A Lei Complementar nº 140/2011 organiza a cooperação no licenciamento e na fiscalização.' },
+    texto: 'Todos os entes protegem o meio ambiente (art. 23). União, Estados e DF fazem leis em conjunto (art. 24). O Município pode complementá-las para assuntos locais (art. 30, I e II). A Lei Complementar nº 140/2011 organiza a cooperação no licenciamento e na fiscalização.',
+    cobrar: { executar: 'Prefeito, governador e Presidente, de acordo com o alcance do problema (local, estadual ou nacional).', legislar: 'Vereadores, deputados estaduais e deputados federais e senadores, conforme a lei que precisa mudar.' } },
   { id: 'consumo', icon: 'shopping_cart', titulo: 'Leis de proteção ao consumidor', tipo: 'Lei concorrente', artigo: 'Art. 24, VIII',
     uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'apoio',
-    texto: 'A União edita as normas gerais e os Estados e o DF as complementam. O Município pode legislar sobre o interesse local (art. 30, I e II).' },
+    texto: 'A União edita as normas gerais e os Estados e o DF as complementam. O Município pode legislar sobre o interesse local (art. 30, I e II).',
+    cobrar: { executar: 'Prefeito e governador, que mantêm órgãos de fiscalização.', legislar: 'Deputados federais e senadores (normas gerais), deputados estaduais e vereadores (normas complementares).' } },
 ];
 
 const tipos = [
@@ -111,9 +125,26 @@ const tipos = [
         <h3 class="mt-2 text-xl font-bold" id="out-titulo"></h3>
         <p class="mt-2 text-ink-soft" id="out-texto"></p>
       </div>
+
+      <div class="mt-4 rounded-3xl border border-peach-300 bg-peach-50 p-5">
+        <h3 class="flex items-center gap-2 text-xl font-bold text-peach-600"><Icon name="campaign" /> Quem eu devo cobrar?</h3>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          <div class="card !p-4"><p class="flex items-center gap-2 text-sm font-extrabold"><Icon name="domain" class="text-mint-600" /> Se o serviço não funciona (Executivo)</p><p class="mt-1 text-sm text-ink-soft" id="out-exec"></p></div>
+          <div class="card !p-4"><p class="flex items-center gap-2 text-sm font-extrabold"><Icon name="edit_document" class="text-sky-600" /> Se a lei precisa mudar (Legislativo)</p><p class="mt-1 text-sm text-ink-soft" id="out-leg"></p></div>
+        </div>
+      </div>
     </Section>
 
-    <Fonte itens={[art(18), art(21), art(22), art(23), art(24), art(25), art(30), art(32)]} />
+    <Section title="Regra prática para cobrar">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="card bg-mint-50"><Icon name="domain" class="text-3xl text-mint-600" /><h3 class="mt-2 font-bold">Executivo: prefeito, governador, Presidente</h3><p class="mt-1 text-sm text-ink-soft">Cobre de quem <strong>executa</strong>: o posto de saúde, a creche, o ônibus, a polícia. É o Executivo que administra o serviço e o dinheiro.</p></div>
+        <div class="card bg-sky-50"><Icon name="edit_document" class="text-3xl text-sky-600" /><h3 class="mt-2 font-bold">Legislativo: vereador, deputado, senador</h3><p class="mt-1 text-sm text-ink-soft">Cobre de quem <strong>faz as leis, vota o orçamento e fiscaliza</strong> o Executivo. Vereadores, deputados e senadores não administram o serviço: eles fazem a lei e fiscalizam quem administra.</p></div>
+        <div class="card bg-peach-50"><Icon name="gavel" class="text-3xl text-peach-600" /><h3 class="mt-2 font-bold">Se um direito foi violado</h3><p class="mt-1 text-sm text-ink-soft">Pode-se recorrer ao Judiciário. O Ministério Público defende os interesses da sociedade (art. 127) e a Defensoria Pública atende quem não pode pagar um advogado (art. 134).</p></div>
+      </div>
+      <p class="prose-p mt-4 max-w-3xl">Em muitos casos mais de um ente atua. Nesses casos, comece por quem presta o serviço na ponta (em geral, o prefeito) e procure também o parlamentar do nível que faz a lei ou envia o recurso.</p>
+    </Section>
+
+    <Fonte itens={[art(18), art(21), art(22), art(23), art(24), art(25), art(30), art(32), art(70, '(fiscalização pelo Legislativo)'), art(127), art(134)]} />
   </LevelBlock>
 
   <LevelBlock nivel="avancado">
@@ -181,6 +212,8 @@ const tipos = [
       document.getElementById('out-art').textContent = d.artigo;
       document.getElementById('out-titulo').textContent = d.titulo;
       document.getElementById('out-texto').textContent = d.texto;
+      document.getElementById('out-exec').textContent = d.cobrar.executar;
+      document.getElementById('out-leg').textContent = d.cobrar.legislar;
     };
     btns.forEach((b) => b.addEventListener('click', () => {
       btns.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', String(on)); });
