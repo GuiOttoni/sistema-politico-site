@@ -75,3 +75,7 @@ No Netlify, escolha **Add new site → Import an existing project**, conecte est
 ## Observação sobre links do TSE
 
 Os endereços de `tse.jus.br` bloqueiam acesso automatizado (HTTP 403), mas abrem normalmente em navegadores.
+
+## Licença
+
+Código sob a [licença MIT](LICENSE). Os textos remetem a fontes oficiais, que seguem as regras de uso de cada órgão.
