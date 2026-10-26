@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import InfoCard from '../components/InfoCard.astro';
+import Quiz from '../components/Quiz.astro';
+import { tones, type Tone } from '../lib/tones';
+
+interface Ramo { id: string; nome: string; emoji: string; tone: Tone; cupula: string; segundo: string; primeiro: string; faz: string }
+const ramos: Ramo[] = [
+  { id: 'stf', nome: 'Supremo (STF)', emoji: '🏛️', tone: 'lilac', cupula: 'Supremo Tribunal Federal — 11 ministros', segundo: '—', primeiro: '—',
+    faz: 'Guardião da Constituição (Art. 102). Exerce o controle concentrado de constitucionalidade, julga causas de cúpula da República e resolve conflitos federativos.' },
+  { id: 'comum-fed', nome: 'Justiça Federal', emoji: '🇧🇷', tone: 'sky', cupula: 'STJ — mínimo de 33 ministros (uniformiza a lei federal)', segundo: '6 Tribunais Regionais Federais (TRF 1 a 6)', primeiro: 'Juízes federais e Juizados Especiais Federais',
+    faz: 'Julga causas em que a União, autarquias ou empresas públicas federais têm interesse. O TRF da 6ª Região, recém-instalado, cobre só Minas Gerais.' },
+  { id: 'comum-est', nome: 'Justiça Estadual', emoji: '🗺️', tone: 'mint', cupula: 'STJ (recursos infraconstitucionais)', segundo: '27 Tribunais de Justiça (desembargadores)', primeiro: 'Juízes de Direito, Varas, Júri e Juizados Especiais',
+    faz: 'Competência residual: julga tudo que não for da Justiça Federal ou das Especializadas (cível, família, empresarial, criminal comum…). O Judiciário do DF é organizado e mantido pela União.' },
+  { id: 'trab', nome: 'Justiça do Trabalho', emoji: '👷', tone: 'peach', cupula: 'TST — 27 ministros', segundo: '24 Tribunais Regionais do Trabalho', primeiro: 'Varas do Trabalho',
+    faz: 'Concilia e julga conflitos individuais e coletivos de trabalho (Art. 111-A).' },
+  { id: 'eleit', nome: 'Justiça Eleitoral', emoji: '🗳️', tone: 'butter', cupula: 'TSE — mínimo de 7 ministros', segundo: '27 Tribunais Regionais Eleitorais', primeiro: 'Juízes e Juntas Eleitorais',
+    faz: 'Organiza e fiscaliza todo o processo eleitoral, registra partidos e candidatos, julga contenciosos e diploma os eleitos.' },
+  { id: 'mil', nome: 'Justiça Militar', emoji: '🎖️', tone: 'rose', cupula: 'STM — 15 ministros (União)', segundo: 'TJMs (SP, MG e RS) ou os próprios TJs', primeiro: 'Conselhos de Justiça e juízes-auditores',
+    faz: 'Julga crimes militares das Forças Armadas e, nos Estados, policiais e bombeiros militares.' },
+];
+
+const funcoes = [
+  { emoji: '🛡️', tone: 'sky' as const, nome: 'Ministério Público', arts: 'Arts. 127–130-A', txt: 'Defende a ordem jurídica, o regime democrático e os interesses sociais. Promove privativamente a ação penal pública e o inquérito civil / ação civil pública (patrimônio público, meio ambiente, consumidor, idosos, crianças). É fiscalizado pelo CNMP.' },
+  { emoji: '🏦', tone: 'lilac' as const, nome: 'Advocacia Pública', arts: 'Arts. 131–132', txt: 'Representa judicialmente os entes e dá consultoria jurídica ao Executivo. Na União é a AGU; a PGFN cobra a dívida ativa tributária. Nos Estados, são os Procuradores.' },
+  { emoji: '👩‍⚖️', tone: 'mint' as const, nome: 'Advocacia', arts: 'Art. 133', txt: 'O advogado é indispensável à administração da justiça e inviolável por seus atos no exercício da profissão, nos limites da lei.' },
+  { emoji: '🤲', tone: 'peach' as const, nome: 'Defensoria Pública', arts: 'Arts. 134–135', txt: 'Defesa gratuita, judicial e extrajudicial, de quem não pode pagar. Tem autonomia administrativa e iniciativa de proposta orçamentária.' },
+];
+---
+<Base title="Justiça e fiscalização" slug="justica">
+  <PageHeader slug="justica" />
+
+  <Section kicker="Poder Judiciário" title="Um poder técnico e contramajoritário">
+    <Fragment slot="intro">
+      <p>Ao contrário de presidente e parlamentares, juízes não são eleitos: entram por <strong>concurso público</strong> (exceto vagas do quinto constitucional e nomeações para tribunais superiores). Isso é intencional — a missão do Judiciário é proteger a lei e os direitos fundamentais, mesmo contra maiorias do momento.</p>
+      <p>Dois princípios guiam o sistema: a <strong>inafastabilidade da jurisdição</strong> (a lei não pode impedir ninguém de ir à Justiça — Art. 5º, XXXV) e a vedação a <strong>tribunais de exceção</strong> (ninguém é julgado por tribunal criado depois do fato).</p>
+    </Fragment>
+
+    <div class="flex flex-wrap gap-2" id="ramos" role="tablist" aria-label="Ramos da Justiça">
+      {ramos.map((r, i) => <button type="button" role="tab" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-selected={i === 0} data-id={r.id}>{r.emoji} {r.nome}</button>)}
+    </div>
+    {ramos.map((r, i) => {
+      const t = tones[r.tone];
+      return (
+        <div role="tabpanel" data-ramo={r.id} class={`mt-4 rounded-3xl border ${t.border} ${t.bgSoft} p-6 ${i === 0 ? '' : 'hidden'}`}>
+          <h3 class="text-2xl font-bold">{r.emoji} {r.nome}</h3>
+          <p class="prose-p mt-2">{r.faz}</p>
+          <ol class="mt-4 grid gap-3 sm:grid-cols-3">
+            <li class="card"><p class="text-xs font-extrabold uppercase text-ink-soft">Cúpula</p><p class="mt-1 font-bold">{r.cupula}</p></li>
+            <li class="card"><p class="text-xs font-extrabold uppercase text-ink-soft">2º grau</p><p class="mt-1 font-bold">{r.segundo}</p></li>
+            <li class="card"><p class="text-xs font-extrabold uppercase text-ink-soft">1º grau</p><p class="mt-1 font-bold">{r.primeiro}</p></li>
+          </ol>
+        </div>
+      );
+    })}
+    <div class="mt-5 grid gap-4 lg:grid-cols-2">
+      <Callout tone="butter" icon="🧑‍⚖️" title="CNJ — o “síndico” do Judiciário">
+        <p>O Conselho Nacional de Justiça (15 conselheiros) <strong>não julga processos</strong>: faz o controle administrativo e financeiro dos tribunais, produz relatório anual ao Congresso e mantém a Escola Nacional do Judiciário (ENAJU).</p>
+      </Callout>
+      <Callout tone="lilac" icon="1/5" title="Quinto constitucional">
+        <p>Um quinto das vagas do TST, TRTs, TRFs e TJs é preenchido por advogados e membros do Ministério Público com mais de 10 anos de atividade — para oxigenar os tribunais.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Section kicker="Funções Essenciais à Justiça" title="Quem acusa, quem defende e quem representa o Estado">
+    <Fragment slot="intro">
+      <p>Para o juiz ser imparcial, as funções de <strong>julgar, acusar e defender</strong> são separadas. Por isso a Constituição criou instituições autônomas que <strong>não fazem parte de nenhum dos Três Poderes</strong>.</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {funcoes.map((f) => <InfoCard tone={f.tone} emoji={f.emoji} tag={f.arts} title={f.nome}><p>{f.txt}</p></InfoCard>)}
+    </div>
+  </Section>
+
+  <Section kicker="Controle externo" title="Tribunal de Contas da União (TCU)">
+    <Fragment slot="intro">
+      <p>O Congresso fiscaliza as finanças públicas (Arts. 70 a 75) com o auxílio técnico do TCU, replicado nos Estados e Municípios pelos TCEs. O ponto mais importante: <strong>o TCU não faz parte do Judiciário</strong>. Ele <em>julga contas, não pessoas</em>; suas decisões são técnico-administrativas e podem ser revistas pela Justiça.</p>
+      <p>São 9 ministros: 3 escolhidos pelo Presidente (com aprovação do Senado) e 6 pelo Congresso.</p>
+    </Fragment>
+
+    <div class="flex gap-2" id="contas" role="tablist" aria-label="Tipos de contas">
+      <button type="button" role="tab" class="btn is-active" aria-selected="true" data-c="gov">📊 Contas de Governo</button>
+      <button type="button" role="tab" class="btn" aria-selected="false" data-c="gestao">🧾 Contas de Gestão</button>
+    </div>
+    <div data-conta="gov" class="mt-4 rounded-3xl border border-sky-300 bg-sky-50 p-6">
+      <h3 class="text-xl font-bold">Art. 71, I — o TCU só <em>opina</em></h3>
+      <ul class="mt-3 list-disc space-y-2 pl-5 text-ink-soft">
+        <li>Sobre as contas anuais do Presidente, o TCU emite um <strong>parecer prévio em 60 dias</strong>.</li>
+        <li>O parecer <strong>não vincula</strong> o Congresso, que faz o julgamento político final (e pode julgar mesmo sem o parecer — ADPF 434).</li>
+        <li>Nos Municípios, o parecer do Tribunal de Contas só deixa de valer por decisão de <strong>2/3 da Câmara</strong> (Art. 31, § 2º).</li>
+      </ul>
+    </div>
+    <div data-conta="gestao" class="mt-4 hidden rounded-3xl border border-rose-300 bg-rose-50 p-6">
+      <h3 class="text-xl font-bold">Art. 71, II — o TCU <em>julga</em></h3>
+      <ul class="mt-3 list-disc space-y-2 pl-5 text-ink-soft">
+        <li>Julga diretamente as contas de quem administra dinheiro, bens e valores públicos em <strong>todos os Poderes</strong>, nas empresas estatais e em quem causar perda de recursos públicos.</li>
+        <li>Sem precisar do aval posterior do Legislativo.</li>
+        <li>Pode aplicar multas, determinar a indisponibilidade de bens (poder geral de cautela) e fixar prazo para corrigir ilegalidades. <strong>Contratos</strong> só o Congresso pode sustar.</li>
+      </ul>
+    </div>
+    <div class="mt-5">
+      <Callout tone="mint" icon="🧮" title="Novidade da Reforma Tributária (EC 132/2023)">
+        <p>O TCU passou a calcular os coeficientes do Fundo Nacional de Desenvolvimento Regional e os cálculos para o Senado fixar, por resolução, as alíquotas do IBS e da CBS.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Quiz perguntas={[
+    { q: 'O TCU faz parte do Poder Judiciário?', opcoes: ['Sim', 'Não: auxilia o Congresso no controle externo', 'Só em nível estadual', 'Depende do caso'], certa: 1, porque: 'O TCU não exerce função jurisdicional, e por isso suas decisões podem ser revistas pelo Judiciário.' },
+    { q: 'Quem promove privativamente a ação penal pública?', opcoes: ['Defensoria Pública', 'Advocacia-Geral da União', 'Ministério Público', 'CNJ'], certa: 2, porque: 'Art. 129: é função institucional do Ministério Público.' },
+    { q: 'O CNJ julga processos de cidadãos?', opcoes: ['Sim, como última instância', 'Não: controla administrativa e financeiramente o Judiciário', 'Só processos trabalhistas', 'Só causas contra o governo'], certa: 1, porque: 'É órgão interno do Judiciário sem função jurisdicional.' },
+    { q: 'Qual Justiça organiza as eleições?', opcoes: ['Federal', 'Eleitoral', 'Militar', 'Estadual'], certa: 1, porque: 'TSE, 27 TREs e juízes/juntas eleitorais.' },
+  ]} />
+
+  <PageNav slug="justica" />
+
+  <script>
+    const wire = (sel: string, attr: string, panel: string) => {
+      const btns = document.querySelectorAll<HTMLButtonElement>(`${sel} button`);
+      const panels = document.querySelectorAll<HTMLElement>(`[${panel}]`);
+      btns.forEach((b) => b.addEventListener('click', () => {
+        const id = b.dataset[attr]!;
+        btns.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-selected', String(on)); });
+        panels.forEach((p) => p.classList.toggle('hidden', p.getAttribute(panel) !== id));
+      }));
+    };
+    wire('#ramos', 'id', 'data-ramo');
+    wire('#contas', 'c', 'data-conta');
+  </script>
+</Base>

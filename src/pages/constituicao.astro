@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import Quiz from '../components/Quiz.astro';
+import { tones, type Tone } from '../lib/tones';
+
+const pilares: { tone: Tone; emoji: string; nome: string; def: string; base: string; pratica: string; contra: string }[] = [
+  { tone: 'rose', emoji: '🗳️', nome: 'República', def: 'Forma de governo', base: 'Art. 1º, caput',
+    pratica: 'Governantes são eleitos, ficam por tempo determinado e precisam prestar contas (accountability) e responder pelos seus atos.',
+    contra: 'Oposto da monarquia, onde o poder é vitalício e hereditário.' },
+  { tone: 'sky', emoji: '🧩', nome: 'Federação', def: 'Forma de Estado', base: 'Arts. 1º e 18',
+    pratica: 'O poder é dividido entre União, 26 Estados, Distrito Federal e Municípios. Todos têm autonomia política, administrativa e financeira — e nenhum pode sair da Federação.',
+    contra: 'Oposto do Estado unitário, onde tudo se decide em um centro só.' },
+  { tone: 'mint', emoji: '🧑‍💼', nome: 'Presidencialismo', def: 'Sistema de governo', base: 'Arts. 2º e 76 a 84',
+    pratica: 'O Presidente é, ao mesmo tempo, chefe de Estado e chefe de Governo, eleito diretamente, com mandato fixo, e não depende da confiança do Parlamento para continuar no cargo.',
+    contra: 'No parlamentarismo, quem chefia o governo é o primeiro-ministro, escolhido pelo Parlamento.' },
+  { tone: 'lilac', emoji: '🙋', nome: 'Democracia semidireta', def: 'Regime político', base: 'Art. 1º, parágrafo único, e Art. 14',
+    pratica: 'Todo poder emana do povo, que o exerce por representantes eleitos (indireta) ou diretamente, por plebiscito, referendo e iniciativa popular de leis.',
+    contra: 'Combina a democracia representativa com ferramentas de participação direta.' },
+];
+
+const fundamentos = [
+  ['🇧🇷', 'Soberania'], ['🪪', 'Cidadania'], ['🤲', 'Dignidade da pessoa humana'],
+  ['👷', 'Valores sociais do trabalho e da livre iniciativa'], ['🌈', 'Pluralismo político'],
+];
+
+const pecs = [
+  { q: 'Uma PEC propõe acabar com o voto secreto nas eleições. Ela pode ser sequer discutida?', opcoes: ['Pode ser discutida', 'Barrada: cláusula pétrea'], certa: 1,
+    porque: 'O voto direto, secreto, universal e periódico é cláusula pétrea (Art. 60, § 4º).' },
+  { q: 'Uma PEC propõe mudar as regras de aposentadoria. Pode ser discutida?', opcoes: ['Pode ser discutida', 'Barrada: cláusula pétrea'], certa: 0,
+    porque: 'Não há cláusula pétrea sobre isso: a Constituição já foi emendada muitas vezes em temas assim (ex.: EC 132/2023 mudou o sistema tributário).' },
+  { q: 'Uma PEC propõe que o Estado de São Paulo passe a ser governado diretamente pela União, sem governo próprio. E agora?', opcoes: ['Pode ser discutida', 'Barrada: cláusula pétrea'], certa: 1,
+    porque: 'Tende a abolir a forma federativa de Estado — cláusula pétrea.' },
+  { q: 'Uma PEC propõe subordinar o Judiciário às ordens do Executivo. Pode?', opcoes: ['Pode ser discutida', 'Barrada: cláusula pétrea'], certa: 1,
+    porque: 'A separação dos Poderes é cláusula pétrea.' },
+  { q: 'Uma PEC propõe incluir um novo direito social na Constituição, como o transporte (foi o caso da EC 90/2015). Pode?', opcoes: ['Pode ser discutida', 'Barrada: cláusula pétrea'], certa: 0,
+    porque: 'Ampliar direitos é permitido. O que as cláusulas pétreas barram é a PEC “tendente a abolir” direitos e garantias individuais.' },
+];
+---
+<Base title="A Constituição e os 4 pilares" slug="constituicao">
+  <PageHeader slug="constituicao" />
+
+  <Section kicker="Ponto de partida" title="A “Constituição Cidadã”">
+    <Fragment slot="intro">
+      <p>Em <strong>5 de outubro de 1988</strong> foi promulgada a Constituição que vale até hoje. Ela marca a volta da democracia depois do regime militar (1964–1985) e colocou os <strong>direitos fundamentais</strong> e a descentralização no centro do sistema.</p>
+      <p>Ela é <strong>analítica</strong>: entra em detalhes de educação, saúde, trabalho, moradia… Isso protege conquistas sociais, mas também faz o texto mudar com frequência: até o início de 2026 acumulou <strong>148 emendas</strong> (138 emendas ordinárias, 6 de revisão e 4 tratados de direitos humanos com valor de emenda).</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="card bg-lilac-50"><p class="font-display text-4xl font-bold text-lilac-600">9</p><p class="text-sm text-ink-soft">títulos, dos Princípios Fundamentais (arts. 1º a 4º) às Disposições Gerais (arts. 234 a 250).</p></div>
+      <div class="card bg-mint-50"><p class="font-display text-4xl font-bold text-mint-600">Art. 1º</p><p class="text-sm text-ink-soft">Brasil = união indissolúvel de Estados, Municípios e Distrito Federal, num Estado Democrático de Direito.</p></div>
+      <div class="card bg-peach-50"><p class="font-display text-4xl font-bold text-peach-600">Art. 19</p><p class="text-sm text-ink-soft">Estado laico: nenhum ente pode estabelecer ou subvencionar cultos religiosos.</p></div>
+    </div>
+  </Section>
+
+  <Section kicker="Os 5 fundamentos" title="Em que o Estado brasileiro se apoia">
+    <ul class="flex flex-wrap gap-3">
+      {fundamentos.map(([e, n]) => (
+        <li class="card flex items-center gap-3 !py-3"><span class="text-2xl">{e}</span><span class="font-bold">{n}</span></li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section kicker="O coração do sistema" title="Os 4 pilares — clique para abrir">
+    <Fragment slot="intro">
+      <p>Quatro palavras diferentes respondem a quatro perguntas diferentes. É comum confundi-las, então vale separar com calma.</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {pilares.map((p) => {
+        const t = tones[p.tone];
+        return (
+          <details class={`group rounded-3xl border ${t.border} ${t.bgSoft} p-5 open:shadow-md`}>
+            <summary class="flex cursor-pointer list-none items-center gap-4">
+              <span class={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl text-3xl ${t.bg}`}>{p.emoji}</span>
+              <span class="flex-1">
+                <span class={`text-xs font-extrabold uppercase ${t.text}`}>{p.def}</span>
+                <span class="block font-display text-2xl font-bold">{p.nome}</span>
+              </span>
+              <span class="text-xl transition group-open:rotate-180" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="prose-p mt-4">
+              <p><strong>Na prática:</strong> {p.pratica}</p>
+              <p><strong>Por contraste:</strong> {p.contra}</p>
+              <span class={`chip ${t.chip}`}>📌 {p.base}</span>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+  </Section>
+
+  <Section kicker="Blindagem" title="Cláusulas pétreas: o que nem uma emenda muda">
+    <Fragment slot="intro">
+      <p>O Art. 60, § 4º lista o “núcleo duro” da Constituição. Nenhuma PEC pode nem ser <em>discutida</em> se for tendente a abolir:</p>
+    </Fragment>
+    <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <li class="card bg-rose-50">🧩 A forma federativa de Estado</li>
+      <li class="card bg-sky-50">🗳️ O voto direto, secreto, universal e periódico</li>
+      <li class="card bg-mint-50">⚖️ A separação dos Poderes</li>
+      <li class="card bg-lilac-50">🛡️ Os direitos e garantias individuais</li>
+    </ul>
+    <div class="mt-5">
+      <Callout tone="butter" title="Como mudar a Constituição, então?">
+        <p>Por <strong>PEC</strong>: precisa de 3/5 dos votos (308 deputados e 49 senadores), em dois turnos em cada Casa. Não passa por sanção ou veto do presidente.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Quiz titulo="Jogo: essa PEC pode ser discutida?" perguntas={pecs} />
+  <Quiz titulo="Revisão rápida" perguntas={[
+    { q: 'Qual pilar descreve “o presidente é chefe de Estado e de governo, com mandato fixo”?', opcoes: ['República', 'Federação', 'Presidencialismo', 'Democracia semidireta'], certa: 2, porque: 'Esse é o sistema de governo: presidencialismo.' },
+    { q: 'Quem tem autonomia na Federação brasileira?', opcoes: ['Só a União', 'União e Estados', 'União, Estados e DF', 'União, Estados, DF e Municípios'], certa: 3, porque: 'O Brasil é uma federação de três níveis: os Municípios também são entes federativos autônomos.' },
+  ]} />
+
+  <PageNav slug="constituicao" />
+</Base>

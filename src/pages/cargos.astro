@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import Quiz from '../components/Quiz.astro';
+import { tones, type Tone } from '../lib/tones';
+import { href } from '../data/trilha';
+
+interface Cargo { id: string; esfera: 'Federal' | 'Estadual / Distrital' | 'Municipal'; nome: string; emoji: string; poder: 'Executivo' | 'Legislativo'; tone: Tone; mandato: string; reeleicao: string; voto: string; faz: string[]; qtd?: string }
+
+const cargos: Cargo[] = [
+  { id: 'pres', esfera: 'Federal', nome: 'Presidente (e vice)', emoji: '🏛️', poder: 'Executivo', tone: 'mint', mandato: '4 anos', reeleicao: '1 reeleição consecutiva', voto: 'Majoritário, 2 turnos (maioria absoluta)',
+    faz: ['Chefe de Estado e de Governo', 'Sanciona e veta leis; edita Medidas Provisórias', 'Nomeia ministros, indica ministros do STF', 'Comanda as Forças Armadas e as relações internacionais', 'Envia o Orçamento (PPA, LDO, LOA)'] },
+  { id: 'sen', esfera: 'Federal', nome: 'Senador(a)', emoji: '🏺', poder: 'Legislativo', tone: 'sky', mandato: '8 anos', reeleicao: 'Sem limite', voto: 'Majoritário simples (1 turno)', qtd: '81 (3 por Estado e 3 pelo DF)',
+    faz: ['Representa os Estados e o DF', 'Sabatina e aprova STF, BC, PGR, TCU, embaixadores, agências', 'Julga impeachment de presidente e ministros do STF', 'Autoriza empréstimos externos', 'Renovação alternada: 1/3 e 2/3 a cada 4 anos'] },
+  { id: 'depf', esfera: 'Federal', nome: 'Deputado(a) Federal', emoji: '🏢', poder: 'Legislativo', tone: 'sky', mandato: '4 anos', reeleicao: 'Sem limite', voto: 'Proporcional de lista aberta', qtd: '513 (de 8 a 70 por UF)',
+    faz: ['Representa proporcionalmente o povo', 'Casa iniciadora dos projetos do Executivo, do STF e de iniciativa popular', 'Autoriza a abertura de processo contra o Presidente', 'Fiscaliza o Executivo e destina emendas ao Orçamento'] },
+  { id: 'gov', esfera: 'Estadual / Distrital', nome: 'Governador(a) (e vice)', emoji: '🚔', poder: 'Executivo', tone: 'mint', mandato: '4 anos', reeleicao: '1 reeleição consecutiva', voto: 'Majoritário, 2 turnos',
+    faz: ['Chefia a administração estadual', 'Comanda as polícias Civil e Militar e os Bombeiros', 'Saúde regional, ensino médio, infraestrutura', 'Explora o gás canalizado (diretamente ou por concessão)', 'Sanciona e veta leis estaduais'] },
+  { id: 'depe', esfera: 'Estadual / Distrital', nome: 'Deputado(a) Estadual / Distrital', emoji: '📣', poder: 'Legislativo', tone: 'sky', mandato: '4 anos', reeleicao: 'Sem limite', voto: 'Proporcional de lista aberta',
+    faz: ['Elabora a Constituição Estadual e leis estaduais', 'Julga todo ano as contas do governador (com auxílio do TCE)', 'Fiscaliza as secretarias estaduais', 'Processa o governador por crime de responsabilidade'] },
+  { id: 'pref', esfera: 'Municipal', nome: 'Prefeito(a) (e vice)', emoji: '🏘️', poder: 'Executivo', tone: 'mint', mandato: '4 anos', reeleicao: '1 reeleição consecutiva', voto: 'Maioria simples (até 200 mil eleitores) ou 2 turnos (acima disso)',
+    faz: ['Gestão local e serviços de saúde básica, creche e ensino fundamental', 'Transporte coletivo, limpeza urbana, uso do solo', 'Arrecada tributos municipais (IPTU, ISS…)', 'Sanciona e veta leis municipais'] },
+  { id: 'ver', esfera: 'Municipal', nome: 'Vereador(a)', emoji: '🪧', poder: 'Legislativo', tone: 'sky', mandato: '4 anos', reeleicao: 'Sem limite', voto: 'Proporcional de lista aberta',
+    faz: ['Elabora e reforma a Lei Orgânica do município', 'Legisla sobre assuntos de interesse local (Art. 30)', 'Vota o orçamento municipal', 'Fiscaliza a Prefeitura e julga as contas do prefeito'] },
+];
+const esferas = ['Federal', 'Estadual / Distrital', 'Municipal'] as const;
+---
+<Base title="Quem eu elejo?" slug="cargos">
+  <PageHeader slug="cargos" />
+
+  <Section kicker="Sufrágio universal" title="Como o voto funciona (Art. 14)">
+    <Fragment slot="intro">
+      <p>O voto é <strong>direto, secreto, universal e de valor igual</strong> para todos. A Constituição também proíbe a cassação arbitrária de direitos políticos (Art. 15): só se perdem ou suspendem em casos como condenação criminal transitada em julgado, incapacidade civil absoluta ou improbidade administrativa.</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-4">
+      {[['👉', 'Direto', 'Você vota no candidato, sem intermediários.'], ['🤫', 'Secreto', 'Ninguém sabe em quem você votou. Celular na cabine é proibido.'], ['🌎', 'Universal', 'Todo cidadão apto pode votar.'], ['⚖️', 'Igual', 'Cada voto vale um.']].map(([e, t, d]) => (
+        <div class="card bg-mint-50"><div class="text-3xl">{e}</div><h3 class="mt-2 font-bold">{t}</h3><p class="mt-1 text-sm text-ink-soft">{d}</p></div>
+      ))}
+    </div>
+  </Section>
+
+  <Section kicker="Interativo" title="Cargos eleitos em cada esfera">
+    <Fragment slot="intro"><p>Filtre por esfera e clique no cartão para ver mandato, tipo de voto e o que cada cargo faz.</p></Fragment>
+    <div class="flex flex-wrap gap-2" id="filtro-esfera" role="group" aria-label="Filtrar por esfera">
+      <button class="btn is-active" aria-pressed="true" type="button" data-f="todas">Todas</button>
+      {esferas.map((e) => <button class="btn" aria-pressed="false" type="button" data-f={e}>{e}</button>)}
+    </div>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {cargos.map((c) => {
+        const t = tones[c.tone];
+        return (
+          <details class={`group rounded-3xl border ${t.border} bg-white p-5`} data-esfera={c.esfera}>
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-center gap-3">
+                <span class={`grid h-12 w-12 place-items-center rounded-2xl text-2xl ${t.bg}`}>{c.emoji}</span>
+                <div class="flex-1">
+                  <p class="font-display text-lg font-bold leading-tight">{c.nome}</p>
+                  <p class="text-xs font-bold text-ink-soft">{c.esfera} · {c.poder}</p>
+                </div>
+                <span class="transition group-open:rotate-180" aria-hidden="true">⌄</span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span class={`chip ${t.chip}`}>⏳ {c.mandato}</span>
+                <span class="chip bg-white text-ink-soft ring-1 ring-line">🔁 {c.reeleicao}</span>
+              </div>
+            </summary>
+            <div class="prose-p mt-4 text-sm">
+              <p><strong>Como é eleito:</strong> {c.voto}</p>
+              {c.qtd && <p><strong>Quantos:</strong> {c.qtd}</p>}
+              <ul class="list-disc space-y-1 pl-5 text-ink-soft">{c.faz.map((f) => <li>{f}</li>)}</ul>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+    <div class="mt-5">
+      <Callout tone="peach" title="Majoritário x proporcional (resumo)">
+        <p><strong>Majoritário</strong> (presidente, governador, prefeito, senador): vence quem tem mais votos válidos. <strong>Proporcional</strong> (deputados e vereadores): as cadeiras são divididas entre partidos pelo total de votos; veja a etapa <a class="underline font-bold" href={href('eleicoes')}>Como o voto vira cadeira</a>.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Quiz perguntas={[
+    { q: 'Qual cargo tem o mandato mais longo?', opcoes: ['Presidente', 'Senador', 'Deputado federal', 'Governador'], certa: 1, porque: 'Senadores cumprem 8 anos; os demais, 4.' },
+    { q: 'Quantos senadores cada Estado elege?', opcoes: ['1', '2', '3', 'Depende da população'], certa: 2, porque: 'São 3 por Estado e 3 pelo DF, totalizando 81. Isso garante igualdade federativa.' },
+    { q: 'Um prefeito pode ser reeleito quantas vezes de forma consecutiva?', opcoes: ['Nenhuma', 'Uma', 'Duas', 'Sem limite'], certa: 1, porque: 'Chefes do Executivo têm um único mandato de reeleição consecutiva.' },
+    { q: 'Vereadores são eleitos por qual sistema?', opcoes: ['Majoritário simples', 'Majoritário em 2 turnos', 'Proporcional de lista aberta', 'Sorteio'], certa: 2, porque: 'Deputados (federais, estaduais, distritais) e vereadores: proporcional de lista aberta.' },
+  ]} />
+
+  <PageNav slug="cargos" />
+
+  <script>
+    const btns = document.querySelectorAll<HTMLButtonElement>('#filtro-esfera button');
+    const cards = document.querySelectorAll<HTMLElement>('[data-esfera]');
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', String(on)); });
+      cards.forEach((c) => c.classList.toggle('hidden', b.dataset.f !== 'todas' && c.dataset.esfera !== b.dataset.f));
+    }));
+  </script>
+</Base>

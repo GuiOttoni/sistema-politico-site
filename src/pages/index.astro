@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import { trilha, niveis, href, type Nivel } from '../data/trilha';
+import { tones } from '../lib/tones';
+
+const grupos = ([1, 2, 3] as Nivel[]).map((n) => ({ n, ...niveis[n], etapas: trilha.filter((e) => e.nivel === n) }));
+---
+<Base title="Política BR sem mistério — o sistema político brasileiro, do zero ao avançado">
+  <section class="relative overflow-hidden rounded-[2.5rem] border border-lilac-300 bg-lilac-50 p-8 sm:p-14">
+    <div class="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full bg-peach-100 opacity-70 blur-2xl"></div>
+    <div class="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full bg-mint-100 opacity-70 blur-2xl"></div>
+    <div class="relative max-w-3xl">
+      <span class="chip bg-white text-lilac-600">Constituição de 1988 · atualizado para 2026</span>
+      <h1 class="mt-5 text-4xl font-bold leading-tight sm:text-6xl">Entenda como o Brasil <span class="text-lilac-600">funciona</span> — sem juridiquês.</h1>
+      <p class="mt-5 text-lg text-ink-soft">Uma trilha com 9 etapas, cards, simuladores e quizzes. Começa no “o que é uma República?” e chega até cláusula de barreira, TCU e presidencialismo de coalizão.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={href('constituicao')} class="btn !border-lilac-600 !bg-lilac-600 !text-white">Começar pelo básico →</a>
+        <a href={href('federacao')} class="btn">Ir direto ao simulador “Quem faz o quê?”</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-12 grid gap-4 sm:grid-cols-3" aria-label="Como funciona">
+    {[
+      ['🧭', 'Trilha guiada', 'Cada etapa tem começo, meio e fim — e aponta para a próxima.'],
+      ['🎮', 'Aprenda mexendo', 'Simuladores, calculadora eleitoral, jornada da lei e mapa dos poderes.'],
+      ['📚', 'Com fontes', 'Tudo baseado em Constituição, Senado, Câmara, CNJ, TSE e outras fontes listadas.'],
+    ].map(([e, t, d]) => (
+      <div class="card"><div class="text-3xl">{e}</div><h2 class="mt-2 text-lg font-bold">{t}</h2><p class="mt-1 text-sm text-ink-soft">{d}</p></div>
+    ))}
+  </section>
+
+  {grupos.map((g) => (
+    <section class="mt-14">
+      <div class="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <p class="text-sm font-extrabold uppercase tracking-wide text-lilac-600">Nível {g.n}</p>
+          <h2 class="text-3xl font-bold">{g.nome}</h2>
+        </div>
+        <p class="text-ink-soft">{g.descricao}</p>
+      </div>
+      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {g.etapas.map((e) => {
+          const t = tones[e.tone];
+          return (
+            <a href={href(e.slug)} class={`group card relative flex flex-col transition hover:-translate-y-1 hover:shadow-lg`}>
+              <span class="absolute right-4 top-4 hidden text-mint-600" data-done={e.slug} title="Você já visitou">✓ visto</span>
+              <div class={`grid h-14 w-14 place-items-center rounded-2xl text-3xl ${t.bg}`}>{e.emoji}</div>
+              <h3 class="mt-4 text-xl font-bold">{e.titulo}</h3>
+              <p class="mt-2 flex-1 text-sm text-ink-soft">{e.resumo}</p>
+              <p class={`mt-4 text-sm font-extrabold ${t.text}`}>⏱ {e.tempo} <span class="ml-1 transition group-hover:ml-2">→</span></p>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+
+  <section class="mt-14 grid gap-4 sm:grid-cols-2">
+    <a href={href('glossario')} class="card bg-butter-50 transition hover:-translate-y-1"><h2 class="text-xl font-bold">📖 Glossário</h2><p class="mt-1 text-sm text-ink-soft">Termos como “cláusula pétrea”, “vacatio legis” e “quociente eleitoral”, com busca.</p></a>
+    <a href={href('fontes')} class="card bg-sky-50 transition hover:-translate-y-1"><h2 class="text-xl font-bold">🔗 Fontes e referências</h2><p class="mt-1 text-sm text-ink-soft">80 referências da pesquisa original, com links.</p></a>
+  </section>
+</Base>

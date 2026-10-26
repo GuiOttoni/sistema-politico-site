@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import InfoCard from '../components/InfoCard.astro';
+import Quiz from '../components/Quiz.astro';
+
+const ciclos = [
+  { id: '2018', rotulo: 'Eleições 2018', leg: 'Legislatura 2019–2022', pct: 1.5, porUf: 1.0, deps: 9, nota: '30 partidos elegeram deputados; 14 ficaram abaixo da cláusula (9 deles com assento no Congresso).' },
+  { id: '2022', rotulo: 'Eleições 2022', leg: 'Legislatura 2023–2026', pct: 2.0, porUf: 1.0, deps: 11, nota: 'Teste severo de capilaridade: a bancada caiu para algo entre 15 e 17 partidos/federações ao longo de 2026.' },
+  { id: '2026', rotulo: 'Eleições 2026', leg: 'Legislatura 2027–2030', pct: 2.5, porUf: 1.5, deps: 13, nota: 'Um teste decisivo para legendas médias e pequenas.' },
+  { id: '2030', rotulo: 'Eleições 2030 em diante', leg: 'Regra definitiva', pct: 3.0, porUf: 2.0, deps: 15, nota: 'Projeções indicam que apenas cerca de 11 dos partidos atuais cumpririam o patamar isoladamente.' },
+];
+
+const regrasIA = [
+  { q: 'Um candidato publica um vídeo feito com IA, sem avisar que é sintético.', opcoes: ['Pode, é liberdade de expressão', 'Não pode: é obrigatória a rotulagem explícita'], certa: 1,
+    porque: 'As Resoluções TSE 23.755/2026 e 23.757/2026 exigem rotulagem explícita de qualquer conteúdo gerado por IA na propaganda eleitoral.' },
+  { q: 'Na véspera da eleição, a campanha quer soltar um novo vídeo sintético imitando a voz do adversário. E aí?', opcoes: ['Pode, se for engraçado', 'Não pode: há veto absoluto de 72h antes até 24h depois da votação'], certa: 1,
+    porque: 'É proibido veicular novos conteúdos sintéticos que emulem imagem ou voz de candidatos entre 72 horas antes e 24 horas após o fim da votação.' },
+  { q: 'Qual a consequência de violar essas regras?', opcoes: ['Só um aviso', 'Pode levar à cassação do registro ou do diploma e à inelegibilidade'], certa: 1,
+    porque: 'Configura uso indevido dos meios de comunicação e abuso de poder político e econômico.' },
+  { q: 'Quem pode determinar a remoção rápida de desinformação que ameace a estabilidade do processo eleitoral?', opcoes: ['O TSE, em exercício de poder de polícia administrativo, chancelado pelo STF', 'Somente o Congresso'], certa: 0,
+    porque: 'O STF chancelou esse poder do TSE, fixando que a liberdade de expressão não protege a propagação deliberada de notícias falsas.' },
+];
+---
+<Base title="Partidos, barreira e IA nas eleições" slug="partidos">
+  <PageHeader slug="partidos" />
+
+  <Section kicker="Art. 17" title="Partidos: liberdade com limites">
+    <Fragment slot="intro">
+      <p>A Constituição garante a livre criação, fusão, incorporação e extinção de partidos, desde que tenham <strong>caráter nacional</strong> e respeitem a soberania, o regime democrático, o pluripartidarismo e os direitos fundamentais.</p>
+      <p>O problema: em 2018, <strong>30 partidos</strong> elegeram ao menos um deputado federal. Essa fragmentação dificulta a governabilidade (veja a última etapa) e levou à Emenda Constitucional 97/2017.</p>
+    </Fragment>
+  </Section>
+
+  <Section kicker="EC 97/2017" title="A cláusula de desempenho (de barreira)">
+    <Fragment slot="intro">
+      <p>A emenda proibiu coligações nas eleições proporcionais e criou uma barreira que sobe a cada eleição. Para ter acesso ao <strong>Fundo Partidário</strong> e ao <strong>tempo gratuito de rádio e TV</strong>, o partido precisa cumprir <em>um</em> destes dois critérios:</p>
+    </Fragment>
+
+    <div class="flex flex-wrap gap-2" id="ciclos" role="group" aria-label="Ciclo eleitoral">
+      {ciclos.map((c) => <button type="button" class={`btn ${c.id === '2026' ? 'is-active' : ''}`} aria-pressed={c.id === '2026'} data-id={c.id}>{c.rotulo}</button>)}
+    </div>
+
+    <div class="mt-4 grid gap-4 lg:grid-cols-2">
+      <div class="card bg-lilac-50" aria-live="polite">
+        <p class="text-xs font-extrabold uppercase text-lilac-600" id="c-leg"></p>
+        <h3 class="mt-1 text-xl font-bold">Cumprir <u>um</u> dos critérios:</h3>
+        <ol class="mt-3 space-y-3 text-sm">
+          <li class="card !p-4"><strong>1.</strong> Mínimo de <strong id="c-pct"></strong> dos votos válidos nacionais para a Câmara, em pelo menos 9 UFs (1/3), com no mínimo <strong id="c-uf"></strong> em cada uma.</li>
+          <li class="card !p-4"><strong>2.</strong> Eleger pelo menos <strong id="c-deps"></strong> deputados federais, distribuídos em ao menos 9 UFs.</li>
+        </ol>
+        <p class="mt-3 text-sm text-ink-soft" id="c-nota"></p>
+      </div>
+
+      <form class="card space-y-3" id="teste" onsubmit="return false">
+        <h3 class="text-xl font-bold">🧪 Meu partido passou?</h3>
+        <label class="block text-sm font-bold">% dos votos válidos nacionais
+          <input id="t-pct" type="number" min="0" max="100" step="0.1" value="2.2" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2" />
+        </label>
+        <label class="block text-sm font-bold">UFs onde atingiu o mínimo por UF
+          <input id="t-ufpct" type="number" min="0" max="27" value="10" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2" />
+        </label>
+        <label class="block text-sm font-bold">Deputados federais eleitos
+          <input id="t-deps" type="number" min="0" max="513" value="10" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2" />
+        </label>
+        <label class="block text-sm font-bold">UFs em que elegeu deputados
+          <input id="t-ufdeps" type="number" min="0" max="27" value="7" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2" />
+        </label>
+        <p class="rounded-2xl p-3 font-bold" id="t-res" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="mt-6 grid gap-4 lg:grid-cols-2">
+      <Callout tone="rose" icon="📉" title="O que acontece com quem não alcança">
+        <ul class="list-disc space-y-1 pl-5">
+          <li>Sem Fundo Partidário: faltam recursos para sedes, passagens e formação política.</li>
+          <li>Sem tempo gratuito de rádio e TV: perde visibilidade e poder de barganha.</li>
+          <li>Na Câmara, perde a estrutura de liderança e o tempo de comunicações em Plenário.</li>
+          <li>Os <strong>deputados eleitos continuam com o mandato</strong>, e podem migrar para outro partido sem perder o cargo.</li>
+        </ul>
+      </Callout>
+      <Callout tone="mint" icon="💰" title="Atenção: Fundo Eleitoral é diferente">
+        <p>Não alcançar a cláusula não impede, por si só, o acesso ao <strong>Fundo Especial de Financiamento de Campanha</strong> (Fundo Eleitoral, criado em 2017). Já a cláusula original de 5% (Lei 9.096/1995) foi declarada inconstitucional pelo STF em 2006.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Section kicker="Lei 14.208/2021" title="Federações partidárias">
+    <Fragment slot="intro">
+      <p>Dois ou mais partidos com afinidade programática podem atuar <strong>como um único partido</strong> em todo o país, somando votos e cadeiras para superar a cláusula. Em troca, precisam permanecer juntos por pelo menos <strong>quatro anos</strong>. O STF validou a lei, ajustando só o prazo de registro no TSE para ser igual ao da criação de partidos (6 meses antes do pleito).</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <InfoCard tone="rose" emoji="🌹" title="PT · PCdoB · PV"><p>Federação registrada no TSE.</p></InfoCard>
+      <InfoCard tone="sky" emoji="🤝" title="PSDB · Cidadania"><p>O Cidadania superou a cláusula por integrar a federação, mesmo sem eleger congressistas filiados à própria sigla em 2022.</p></InfoCard>
+      <InfoCard tone="mint" emoji="🌿" title="PSOL · REDE"><p>Federação formada para enfrentar a cláusula.</p></InfoCard>
+    </div>
+  </Section>
+
+  <Section kicker="Eleições 2026" title="Inteligência artificial e desinformação">
+    <Fragment slot="intro">
+      <p>A Justiça Eleitoral (TSE + 27 TREs) aplica regras novas para o pleito de 2026. Teste se você sabe o que pode e o que não pode.</p>
+    </Fragment>
+    <Callout tone="butter" icon="🏷️" title="Resumo das regras (Res. TSE 23.755 e 23.757/2026)">
+      <ul class="list-disc space-y-1 pl-5">
+        <li>Todo conteúdo gerado por IA na propaganda precisa de <strong>rotulagem explícita</strong>.</li>
+        <li><strong>Veto absoluto</strong> a novos conteúdos sintéticos que imitem imagem ou voz de candidatos de 72h antes a 24h depois da votação.</li>
+        <li>O descumprimento pode levar à <strong>cassação do registro ou diploma</strong> e à inelegibilidade.</li>
+      </ul>
+    </Callout>
+  </Section>
+
+  <Quiz titulo="Pode ou não pode? IA e propaganda eleitoral" perguntas={regrasIA} />
+
+  <PageNav slug="partidos" />
+
+  <script define:vars={{ ciclos }}>
+    let atual = ciclos.find((c) => c.id === '2026');
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => String(n).replace('.', ',');
+
+    function teste() {
+      const pct = Number($('t-pct').value) || 0;
+      const ufP = Number($('t-ufpct').value) || 0;
+      const deps = Number($('t-deps').value) || 0;
+      const ufD = Number($('t-ufdeps').value) || 0;
+      const c1 = pct >= atual.pct && ufP >= 9;
+      const c2 = deps >= atual.deps && ufD >= 9;
+      const el = $('t-res');
+      el.className = `rounded-2xl p-3 font-bold ${c1 || c2 ? 'bg-mint-100 text-mint-600' : 'bg-rose-100 text-rose-600'}`;
+      el.textContent = c1 || c2
+        ? `✅ Passou${c1 && c2 ? ' pelos dois critérios' : c1 ? ' pelo critério 1 (votos)' : ' pelo critério 2 (cadeiras)'}.`
+        : '❌ Ficou abaixo da cláusula: perde Fundo Partidário e tempo de rádio/TV (os mandatos eleitos permanecem).';
+    }
+    function render() {
+      $('c-leg').textContent = `${atual.rotulo} · ${atual.leg}`;
+      $('c-pct').textContent = `${fmt(atual.pct)}%`;
+      $('c-uf').textContent = `${fmt(atual.porUf)}%`;
+      $('c-deps').textContent = atual.deps;
+      $('c-nota').textContent = atual.nota;
+      teste();
+    }
+    const bs = document.querySelectorAll('#ciclos button');
+    bs.forEach((b) => b.addEventListener('click', () => {
+      atual = ciclos.find((c) => c.id === b.dataset.id);
+      bs.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', String(on)); });
+      render();
+    }));
+    ['t-pct', 't-ufpct', 't-deps', 't-ufdeps'].forEach((id) => $(id).addEventListener('input', teste));
+    render();
+  </script>
+</Base>

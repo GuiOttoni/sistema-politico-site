@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import InfoCard from '../components/InfoCard.astro';
+import Quiz from '../components/Quiz.astro';
+
+type Papel = 'principal' | 'apoio' | 'nenhum';
+interface Demanda {
+  id: string; emoji: string; titulo: string; tipo: string; artigo: string;
+  uniao: Papel; estado: Papel; df: Papel; municipio: Papel; texto: string;
+}
+
+const demandas: Demanda[] = [
+  { id: 'transporte', emoji: '🚌', titulo: 'Ônibus e transporte coletivo urbano', tipo: 'Interesse local', artigo: 'Art. 30, V',
+    uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
+    texto: 'Organizar e prestar o transporte coletivo de caráter essencial é do Município. O Distrito Federal acumula competências de Estado e de Município (Art. 32, § 1º).' },
+  { id: 'creche', emoji: '🧸', titulo: 'Creche e ensino fundamental', tipo: 'Material do Município, com apoio', artigo: 'Art. 30, VI',
+    uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
+    texto: 'O Município mantém a educação infantil e o ensino fundamental, com cooperação técnica e financeira da União e do Estado. As normas gerais de educação são competência concorrente (Art. 24).' },
+  { id: 'saude', emoji: '🏥', titulo: 'Posto de saúde (atenção básica)', tipo: 'Comum + local', artigo: 'Arts. 23, II e 30, VII',
+    uniao: 'apoio', estado: 'apoio', df: 'principal', municipio: 'principal',
+    texto: 'Cuidar da saúde é competência comum dos quatro entes (Art. 23). Na ponta, o Município presta o atendimento, com cooperação técnica e financeira da União e do Estado.' },
+  { id: 'policia', emoji: '🚔', titulo: 'Polícia Militar e Civil', tipo: 'Estadual', artigo: 'Competência residual dos Estados (Art. 25, § 1º)',
+    uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
+    texto: 'O governador gere as polícias Civil e Militar e o Corpo de Bombeiros. Municípios podem ter guardas municipais, mas o policiamento ostensivo estadual é papel do Estado.' },
+  { id: 'gas', emoji: '🔥', titulo: 'Gás encanado', tipo: 'Estadual expressa', artigo: 'Art. 25, § 2º',
+    uniao: 'nenhum', estado: 'principal', df: 'principal', municipio: 'nenhum',
+    texto: 'É a única competência estadual expressa no texto: explorar diretamente ou por concessão os serviços locais de gás canalizado. É vedado usar Medida Provisória para regulamentá-la.' },
+  { id: 'penal', emoji: '🚫', titulo: 'Criar crimes (direito penal)', tipo: 'Legislativa privativa da União', artigo: 'Art. 22, I',
+    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
+    texto: 'Direito penal, civil, comercial, eleitoral, do trabalho… só a União legisla. Nenhum Estado ou Município pode criar tipos penais próprios.' },
+  { id: 'trabalho', emoji: '👷', titulo: 'Leis trabalhistas', tipo: 'Legislativa privativa da União', artigo: 'Art. 22, I',
+    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
+    texto: 'Legislação trabalhista é privativa da União. A lei complementar federal pode autorizar Estados a legislar sobre pontos específicos (parágrafo único do Art. 22).' },
+  { id: 'seguros', emoji: '📑', titulo: 'Contratos de seguro', tipo: 'Legislativa privativa da União', artigo: 'Art. 22, VII',
+    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
+    texto: 'Política de seguros é da União. Um Estado não pode regular contratos de seguro com o pretexto de proteger o consumidor.' },
+  { id: 'moeda', emoji: '💵', titulo: 'Emitir moeda', tipo: 'Material exclusiva da União', artigo: 'Art. 21, VII',
+    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
+    texto: 'As competências do Art. 21 são exclusivas e indelegáveis: moeda, reservas cambiais, defesa nacional, relações com Estados estrangeiros, atividade nuclear.' },
+  { id: 'exterior', emoji: '🌐', titulo: 'Relações com outros países', tipo: 'Material exclusiva da União', artigo: 'Art. 21, I',
+    uniao: 'principal', estado: 'nenhum', df: 'nenhum', municipio: 'nenhum',
+    texto: 'Só a República Federativa do Brasil tem soberania internacional. Estados e Municípios têm autonomia, não soberania.' },
+  { id: 'comercio', emoji: '🛍️', titulo: 'Horário do comércio local', tipo: 'Interesse local', artigo: 'Art. 30, I',
+    uniao: 'nenhum', estado: 'nenhum', df: 'principal', municipio: 'principal',
+    texto: 'Assuntos de interesse local, como o horário de funcionamento do comércio urbano, são do Município.' },
+  { id: 'ambiente', emoji: '🌳', titulo: 'Proteção do meio ambiente', tipo: 'Comum + concorrente', artigo: 'Arts. 23, 24 e 225; LC 140/2011',
+    uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'principal',
+    texto: 'Todos protegem o meio ambiente (competência material comum), e legislam em conjunto União, Estados e DF (concorrente). O Município suplementa pela combinação dos incisos I e II do Art. 30. A LC 140/2011 organiza a cooperação no licenciamento e na fiscalização.' },
+  { id: 'consumo', emoji: '🛒', titulo: 'Leis de proteção ao consumidor', tipo: 'Legislativa concorrente', artigo: 'Art. 24',
+    uniao: 'principal', estado: 'principal', df: 'principal', municipio: 'apoio',
+    texto: 'A União edita normas gerais; Estados e DF as complementam. O Município não está no rol do Art. 24, mas pode suplementar para o interesse local (Art. 30, I e II).' },
+];
+
+const tipos = [
+  { emoji: '🔒', tag: 'Art. 21', titulo: 'Material exclusiva (União)', tone: 'lilac' as const, txt: 'Poder-dever de agir que só a União exerce e não pode delegar: moeda, defesa, relações exteriores.' },
+  { emoji: '✍️', tag: 'Art. 22', titulo: 'Legislativa privativa (União)', tone: 'sky' as const, txt: 'Só a União faz as leis: civil, penal, trabalho, eleitoral… Pode ser delegada a Estados por lei complementar.' },
+  { emoji: '🤝', tag: 'Art. 23', titulo: 'Material comum (todos)', tone: 'mint' as const, txt: 'Saúde, meio ambiente, patrimônio histórico, combate à pobreza: os quatro entes agem juntos (federalismo cooperativo).' },
+  { emoji: '🧬', tag: 'Art. 24', titulo: 'Legislativa concorrente', tone: 'peach' as const, txt: 'União, Estados e DF legislam juntos: a União fixa normas gerais; os Estados complementam.' },
+  { emoji: '🧭', tag: 'Art. 25, § 1º', titulo: 'Residual (Estados)', tone: 'butter' as const, txt: 'Tudo que a Constituição não vedar aos Estados fica com eles.' },
+  { emoji: '🏘️', tag: 'Art. 30', titulo: 'Municipal', tone: 'rose' as const, txt: 'Interesse local (I) e suplementar a legislação federal e estadual no que couber (II).' },
+];
+---
+<Base title="Quem faz o quê?" slug="federacao">
+  <PageHeader slug="federacao" />
+
+  <Section kicker="O princípio-chave" title="Predominância do interesse">
+    <Fragment slot="intro">
+      <p>Para saber quem cuida de quê, use a regra da <strong>predominância do interesse</strong>: assuntos de interesse <strong>nacional</strong> → União; <strong>regional</strong> → Estados; <strong>local</strong> → Municípios. O Distrito Federal acumula as competências de Estado e Município e não pode ser dividido em municípios.</p>
+      <p>No Brasil, os Municípios são <strong>entes federativos autônomos</strong>: têm prefeito e câmara, aprovam sua própria Lei Orgânica e cobram tributos próprios. Isso é raro no mundo — em muitos países, município é só uma divisão administrativa do Estado.</p>
+    </Fragment>
+  </Section>
+
+  <Section kicker="Simulador" title="Quem faz o quê no meu dia a dia?">
+    <Fragment slot="intro"><p>Escolha uma demanda do cotidiano e veja quais entes são responsáveis.</p></Fragment>
+
+    <div class="flex flex-wrap gap-2" id="demandas" role="group" aria-label="Demandas">
+      {demandas.map((d, i) => (
+        <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-id={d.id}>{d.emoji} {d.titulo}</button>
+      ))}
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4" id="entes" aria-live="polite">
+      {[['uniao', '🇧🇷', 'União', 'lilac'], ['estado', '🗺️', 'Estado', 'sky'], ['df', '🏙️', 'Distrito Federal', 'mint'], ['municipio', '🏘️', 'Município', 'peach']].map(([k, e, n]) => (
+        <div class="card text-center transition-all duration-300" data-ente={k}>
+          <div class="text-4xl">{e}</div>
+          <p class="mt-1 font-display text-lg font-bold">{n}</p>
+          <p class="mt-1 text-xs font-extrabold uppercase" data-papel></p>
+        </div>
+      ))}
+    </div>
+
+    <div class="card mt-4 bg-white">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip bg-butter-100 text-butter-600" id="out-tipo"></span>
+        <span class="chip bg-white text-ink-soft ring-1 ring-line" id="out-art"></span>
+      </div>
+      <h3 class="mt-2 text-xl font-bold" id="out-titulo"></h3>
+      <p class="mt-2 text-ink-soft" id="out-texto"></p>
+    </div>
+  </Section>
+
+  <Section kicker="O mapa completo" title="Os seis tipos de competência">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {tipos.map((t) => <InfoCard tone={t.tone} emoji={t.emoji} tag={t.tag} title={t.titulo}><p>{t.txt}</p></InfoCard>)}
+    </div>
+    <div class="mt-6 grid gap-4 lg:grid-cols-2">
+      <Callout tone="sky" icon="📏" title="As 4 regras da competência concorrente (Art. 24, §§ 1º a 4º)">
+        <ol class="list-decimal space-y-1 pl-5">
+          <li>A União só edita <strong>normas gerais</strong>.</li>
+          <li>Isso não exclui a competência <strong>suplementar</strong> dos Estados.</li>
+          <li>Se não houver lei federal, os Estados legislam <strong>plenamente</strong>.</li>
+          <li>Lei federal posterior <strong>suspende</strong> a eficácia da lei estadual contrária (não revoga!).</li>
+        </ol>
+      </Callout>
+      <Callout tone="rose" icon="🔌" title="“Suspende”, não “revoga”">
+        <p>Se uma lei federal sobre normas gerais passa a contrariar a lei estadual, a estadual fica adormecida. Se a lei federal for revogada, a norma estadual <strong>recupera a vigência automaticamente</strong>.</p>
+        <p>Conflitos entre os entes são resolvidos pelo STF (Art. 102) e, em questões infraconstitucionais, pelo STJ (Art. 105).</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Quiz perguntas={[
+    { q: 'Uma câmara de vereadores pode criar um novo crime no município?', opcoes: ['Sim, se for de interesse local', 'Não: direito penal é privativo da União', 'Sim, com aval do prefeito', 'Só se o Estado permitir'], certa: 1, porque: 'Art. 22, I: legislar sobre direito penal é privativo da União.' },
+    { q: 'Quem organiza o transporte coletivo urbano?', opcoes: ['União', 'Estado', 'Município', 'Ninguém: é privado'], certa: 2, porque: 'Art. 30, V: serviços de interesse local, como o transporte coletivo.' },
+    { q: 'O Município aparece no rol de competências legislativas concorrentes do Art. 24?', opcoes: ['Sim', 'Não, mas suplementa pelo Art. 30, I e II', 'Sim, só no meio ambiente', 'Não pode legislar sobre isso'], certa: 1, porque: 'O Art. 24 só fala em União, Estados e DF; o Município legisla sobre assuntos locais e suplementa as leis federais e estaduais.' },
+  ]} />
+
+  <PageNav slug="federacao" />
+
+  <script define:vars={{ demandas }}>
+    const rotulo = { principal: 'Responsável', apoio: 'Coopera', nenhum: '—' };
+    const estilos = {
+      principal: ['border-lilac-300', 'bg-lilac-100', 'scale-105'],
+      apoio: ['border-butter-300', 'bg-butter-50'],
+      nenhum: ['opacity-40'],
+    };
+    const all = new Set(Object.values(estilos).flat());
+    const btns = document.querySelectorAll('#demandas button');
+    const render = (id) => {
+      const d = demandas.find((x) => x.id === id);
+      document.querySelectorAll('[data-ente]').forEach((el) => {
+        const papel = d[el.dataset.ente];
+        all.forEach((c) => el.classList.remove(c));
+        estilos[papel].forEach((c) => el.classList.add(c));
+        el.querySelector('[data-papel]').textContent = rotulo[papel];
+      });
+      document.getElementById('out-tipo').textContent = d.tipo;
+      document.getElementById('out-art').textContent = d.artigo;
+      document.getElementById('out-titulo').textContent = `${d.emoji} ${d.titulo}`;
+      document.getElementById('out-texto').textContent = d.texto;
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', String(on)); });
+      render(b.dataset.id);
+    }));
+    render(demandas[0].id);
+  </script>
+</Base>

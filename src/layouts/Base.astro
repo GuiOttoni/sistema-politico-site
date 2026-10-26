@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+import { trilha, href } from '../data/trilha';
+
+interface Props { title: string; description?: string; slug?: string }
+const { title, description = 'Guia interativo e didático do sistema político brasileiro: do básico ao avançado.', slug = '' } = Astro.props;
+const fullTitle = slug ? `${title} · Política BR sem mistério` : title;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{fullTitle}</title>
+    <link rel="icon" href={`${href()}favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen antialiased" data-slug={slug}>
+    <a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2">Pular para o conteúdo</a>
+    <header class="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <a href={href()} class="flex items-center gap-2 font-display text-lg font-bold">
+          <span class="grid h-9 w-9 place-items-center rounded-2xl bg-lilac-100 text-lg">🇧🇷</span>
+          <span>Política BR <span class="text-lilac-600">sem mistério</span></span>
+        </a>
+        <nav class="flex items-center gap-1 text-sm font-bold" aria-label="Principal">
+          <details class="relative">
+            <summary class="btn list-none">Trilha ▾</summary>
+            <ul class="card absolute right-0 mt-2 w-72 space-y-1 p-2">
+              {trilha.map((e) => (
+                <li>
+                  <a href={href(e.slug)} class="flex items-center gap-2 rounded-2xl px-3 py-2 hover:bg-lilac-50" aria-current={e.slug === slug ? 'page' : undefined}>
+                    <span>{e.emoji}</span><span class="flex-1">{e.titulo}</span><span class="hidden text-mint-600" data-done={e.slug}>✓</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+          <a href={href('glossario')} class="rounded-full px-3 py-2 hover:bg-lilac-50">Glossário</a>
+          <a href={href('fontes')} class="rounded-full px-3 py-2 hover:bg-lilac-50">Fontes</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo" class="mx-auto max-w-6xl px-4 pb-20 pt-8">
+      <slot />
+    </main>
+
+    <footer class="border-t border-line bg-white/60">
+      <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-ink-soft">
+        <p>Conteúdo educativo baseado na pesquisa “Arquitetura Institucional e Dinâmica Política do Brasil” e nas fontes oficiais citadas em <a class="font-bold underline" href={href('fontes')}>Fontes</a>. Não substitui consulta jurídica.</p>
+      </div>
+    </footer>
+
+    <script>
+      const slug = document.body.dataset.slug;
+      let done: string[] = [];
+      try {
+        done = JSON.parse(localStorage.getItem('pbr-visitadas') || '[]');
+        if (slug && !done.includes(slug)) {
+          done.push(slug);
+          localStorage.setItem('pbr-visitadas', JSON.stringify(done));
+        }
+      } catch {}
+      document.querySelectorAll<HTMLElement>('[data-done]').forEach((el) => {
+        if (done.includes(el.dataset.done!)) el.classList.remove('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        document.querySelectorAll('header details[open]').forEach((d) => { if (!d.contains(e.target as Node)) d.removeAttribute('open'); });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+---
+interface Props { title: string; kicker?: string; id?: string }
+const { title, kicker, id } = Astro.props;
+---
+<section id={id} class="mt-14">
+  {kicker && <p class="text-sm font-extrabold uppercase tracking-wide text-lilac-600">{kicker}</p>}
+  <h2 class="mt-1 text-2xl font-bold sm:text-3xl">{title}</h2>
+  <div class="prose-p mt-4 max-w-3xl"><slot name="intro" /></div>
+  <div class="mt-6"><slot /></div>
+</section>

@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageNav from '../components/PageNav.astro';
+import Section from '../components/Section.astro';
+import Callout from '../components/Callout.astro';
+import Quiz from '../components/Quiz.astro';
+import { href } from '../data/trilha';
+
+const era = {
+  classico: {
+    titulo: 'Modelo clássico (1988 – ~2015)',
+    cor: 'sky',
+    pesos: [['Poderes de agenda do presidente (MPs, urgência, iniciativa do orçamento)', 80], ['Ministérios e cargos para aliados', 85], ['Controle da liberação de verbas', 90], ['Poder de emendas dos parlamentares', 25], ['Peso do STF na governabilidade', 30]],
+    texto: 'O presidente forma uma ampla coalizão multipartidária depois da eleição. Distribui ministérios, usa Medidas Provisórias e libera (ou segura) as verbas pedidas por deputados e senadores. Foi consolidado com FHC e levado ao auge nos primeiros mandatos de Lula; o mensalão mostrou os desvios da gestão da base, e Dilma não conseguiu sustentar a coalizão em meio à crise, até o impeachment.',
+  },
+  atual: {
+    titulo: 'Modelo atual (anos 2020)',
+    cor: 'peach',
+    pesos: [['Poderes de agenda do presidente (MPs, urgência, iniciativa do orçamento)', 55], ['Ministérios e cargos para aliados', 60], ['Controle da liberação de verbas', 30], ['Poder de emendas dos parlamentares', 90], ['Peso do STF na governabilidade', 80]],
+    texto: 'As emendas parlamentares (individuais, de bancada e de relator) tornaram-se de execução obrigatória. O Congresso passou a mandar verbas diretamente para seus redutos sem depender do Planalto, fortalecendo as lideranças partidárias e o “Centrão”. Ao mesmo tempo o STF virou árbitro: o Executivo precisa também “pactuar” com o Judiciário para evitar derrotas por inconstitucionalidade.',
+  },
+} as const;
+
+const linha = [
+  ['1946–1964', 'Já havia coalizões', 'Arranjo semelhante na experiência democrática anterior.'],
+  ['1988', 'Abranches publica o ensaio', 'O artigo na revista Dados cunha o termo “presidencialismo de coalizão”.'],
+  ['anos 1990–2000', 'Auge da coordenação central', 'FHC e os primeiros mandatos de Lula: ministérios, MPs e controle do gasto.'],
+  ['2015–2016', 'Crise e impeachment', 'Incapacidade de gerir a coalizão em meio à crise econômica.'],
+  ['2010s–2020s', 'Emendas impositivas', 'Execução obrigatória tira do presidente a “moeda de troca” no varejo.'],
+  ['2020s', 'STF como ator político', 'Pandemia, decisões tributárias e financeiras (como o IOF) ampliam seu papel.'],
+];
+---
+<Base title="Presidencialismo de coalizão" slug="coalizao">
+  <PageHeader slug="coalizao" />
+
+  <Section kicker="A ideia" title="Por que o presidente precisa negociar sempre?">
+    <Fragment slot="intro">
+      <p>O cientista político <strong>Sérgio Abranches</strong> observou, em 1988, que o Brasil combina três ingredientes que raramente andam juntos: <strong>presidencialismo</strong>, <strong>eleição proporcional de lista aberta</strong> para a Câmara e <strong>multipartidarismo muito fragmentado</strong> — tudo numa sociedade desigual e heterogênea.</p>
+      <p>Resultado: o partido do presidente <strong>nunca elege sozinho a maioria</strong> no Congresso. Para governar, ele precisa agir como um primeiro-ministro europeu e montar coalizões multipartidárias <em>depois</em> de eleito.</p>
+    </Fragment>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="card bg-mint-50"><div class="text-3xl">🧑‍💼</div><h3 class="mt-2 font-bold">Presidencialismo</h3><p class="mt-1 text-sm text-ink-soft">Presidente com mandato fixo e eleito diretamente.</p></div>
+      <div class="card bg-sky-50"><div class="text-3xl">📊</div><h3 class="mt-2 font-bold">Proporcional de lista aberta</h3><p class="mt-1 text-sm text-ink-soft">Muitos partidos entram na Câmara.</p></div>
+      <div class="card bg-peach-50"><div class="text-3xl">🧩</div><h3 class="mt-2 font-bold">Multipartidarismo</h3><p class="mt-1 text-sm text-ink-soft">Nenhum partido, sozinho, tem maioria.</p></div>
+    </div>
+  </Section>
+
+  <Section kicker="Interativo" title="Termômetro: o que mantém a coalizão de pé?">
+    <Fragment slot="intro"><p>Alterne entre os dois períodos e compare a “força relativa” de cada instrumento (ilustração qualitativa baseada na análise do PDF, não são dados medidos).</p></Fragment>
+    <div class="flex gap-2" id="era" role="group" aria-label="Período">
+      <button type="button" class="btn is-active" aria-pressed="true" data-e="classico">🕰️ Modelo clássico</button>
+      <button type="button" class="btn" aria-pressed="false" data-e="atual">⚡ Modelo atual</button>
+    </div>
+    <div class="card mt-4" aria-live="polite">
+      <h3 class="text-xl font-bold" id="e-titulo"></h3>
+      <p class="prose-p mt-2" id="e-texto"></p>
+      <ul class="mt-4 space-y-4" id="e-barras"></ul>
+    </div>
+  </Section>
+
+  <Section kicker="Linha do tempo" title="Como chegamos aqui">
+    <ol class="relative space-y-4 border-l-2 border-lilac-300 pl-6">
+      {linha.map(([ano, t, d]) => (
+        <li class="relative">
+          <span class="absolute -left-[2.15rem] top-1 h-4 w-4 rounded-full border-2 border-lilac-600 bg-white"></span>
+          <p class="text-xs font-extrabold uppercase text-lilac-600">{ano}</p>
+          <p class="font-bold">{t}</p>
+          <p class="text-sm text-ink-soft">{d}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="mt-6">
+      <Callout tone="lilac" icon="🔬" title="Para estudar mais">
+        <p>A literatura de ciência política organiza o tema em quatro gerações de estudos (Amorim Neto, Figueiredo e Limongi, Power, Raile, Pereira e Power, entre outros), e a pesquisa mais recente investiga coalizões pré-eleitorais e verticais e o papel dos vice-presidentes. Veja as referências na página de <a class="underline font-bold" href={href("fontes")}>Fontes</a>.</p>
+      </Callout>
+    </div>
+  </Section>
+
+  <Quiz perguntas={[
+    { q: 'Quem cunhou o termo “presidencialismo de coalizão”?', opcoes: ['Montesquieu', 'Sérgio Abranches', 'Ulysses Guimarães', 'Fernando Limongi'], certa: 1, porque: 'Abranches, no ensaio publicado na revista Dados em 1988.' },
+    { q: 'Qual foi a mudança mais decisiva na moeda de troca política nos anos 2020?', opcoes: ['Fim do Senado', 'Emendas parlamentares impositivas', 'Voto obrigatório', 'Fim das Medidas Provisórias'], certa: 1, porque: 'Ao serem de execução obrigatória, tiraram do presidente o controle sobre a liberação das verbas.' },
+    { q: 'Por que o STF entrou na equação da governabilidade?', opcoes: ['Porque legisla', 'Porque a judicialização e a Constituição analítica o tornaram instância de veto e arbitragem', 'Porque nomeia o presidente', 'Porque controla o Orçamento'], certa: 1, porque: 'O Executivo precisa antecipar demandas e dialogar com o Judiciário para evitar declarações de inconstitucionalidade.' },
+  ]} />
+
+  <PageNav slug="coalizao" />
+
+  <script define:vars={{ era }}>
+    const cores = { sky: ['bg-sky-300', 'bg-sky-100'], peach: ['bg-peach-300', 'bg-peach-100'] };
+    const bs = document.querySelectorAll('#era button');
+    const render = (k) => {
+      const e = era[k];
+      document.getElementById('e-titulo').textContent = e.titulo;
+      document.getElementById('e-texto').textContent = e.texto;
+      document.getElementById('e-barras').innerHTML = e.pesos.map(([nome, v]) => `
+        <li><div class="flex justify-between gap-4 text-sm font-bold"><span>${nome}</span><span>${v}%</span></div>
+        <div class="mt-1 h-4 overflow-hidden rounded-full ${cores[e.cor][1]}" role="img" aria-label="${nome}: ${v}%"><div class="h-full rounded-full ${cores[e.cor][0]} transition-all duration-700" style="width:${v}%"></div></div></li>`).join('');
+    };
+    bs.forEach((b) => b.addEventListener('click', () => {
+      bs.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', String(on)); });
+      render(b.dataset.e);
+    }));
+    render('classico');
+  </script>
+</Base>

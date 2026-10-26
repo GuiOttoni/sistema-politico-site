@@ -1,0 +1,27 @@
+---
+import { trilha, href } from '../data/trilha';
+interface Props { slug: string }
+const { slug } = Astro.props;
+const i = trilha.findIndex((e) => e.slug === slug);
+const prev = trilha[i - 1];
+const next = trilha[i + 1];
+---
+<nav class="mt-14 grid gap-4 sm:grid-cols-2" aria-label="Navegação da trilha">
+  {prev ? (
+    <a href={href(prev.slug)} class="card transition hover:-translate-y-0.5">
+      <span class="text-xs font-bold uppercase text-ink-soft">← Anterior</span>
+      <span class="mt-1 block font-display text-lg font-bold">{prev.emoji} {prev.titulo}</span>
+    </a>
+  ) : <span />}
+  {next ? (
+    <a href={href(next.slug)} class="card text-right transition hover:-translate-y-0.5">
+      <span class="text-xs font-bold uppercase text-ink-soft">Próxima →</span>
+      <span class="mt-1 block font-display text-lg font-bold">{next.emoji} {next.titulo}</span>
+    </a>
+  ) : (
+    <a href={href('fontes')} class="card text-right transition hover:-translate-y-0.5">
+      <span class="text-xs font-bold uppercase text-ink-soft">Fim da trilha 🎉</span>
+      <span class="mt-1 block font-display text-lg font-bold">Ver as fontes da pesquisa</span>
+    </a>
+  )}
+</nav>
