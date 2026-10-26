@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+import type { Link } from '../data/links';
+interface Props { itens: Link[]; titulo?: string }
+const { itens, titulo = 'Fontes e conferência' } = Astro.props;
+---
+<aside class="mt-8 rounded-3xl border border-line bg-white/80 p-5" aria-label={titulo}>
+  <p class="flex items-center gap-2 text-sm font-extrabold text-ink"><Icon name="verified" class="text-mint-600" /> {titulo}</p>
+  <ul class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+    {itens.map((i) => (
+      <li class="flex items-start gap-2">
+        <Icon name={i.oficial ? 'account_balance' : 'article'} class={i.oficial ? 'text-lilac-600' : 'text-ink-soft'} />
+        <a href={i.url} target="_blank" rel="noopener noreferrer" class="underline decoration-line underline-offset-4 hover:text-lilac-600">{i.rotulo}</a>
+        <span class="sr-only">{i.oficial ? '(fonte oficial)' : '(fonte de apoio)'}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-3 text-xs text-ink-soft">
+    <Icon name="account_balance" class="text-lilac-600" /> fonte oficial do Poder público
+    · <Icon name="article" /> fonte de apoio (imprensa ou artigo acadêmico)
+  </p>
+</aside>

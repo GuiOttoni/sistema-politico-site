@@ -1,10 +1,11 @@
 ---
+import Icon from './Icon.astro';
 export interface Pergunta { q: string; opcoes: string[]; certa: number; porque: string }
-interface Props { perguntas: Pergunta[]; titulo?: string }
-const { perguntas, titulo = 'Teste o que aprendeu' } = Astro.props;
+interface Props { perguntas: Pergunta[]; titulo?: string; id?: string }
+const { perguntas, titulo = 'Teste seus conhecimentos', id } = Astro.props;
 ---
-<section class="mt-14 rounded-[2rem] border border-peach-300 bg-peach-50 p-6 sm:p-8" data-quiz>
-  <h2 class="text-2xl font-bold">🎯 {titulo}</h2>
+<section id={id} class="mt-14 scroll-mt-24 rounded-[2rem] border border-peach-300 bg-peach-50 p-6 sm:p-8" data-quiz>
+  <h2 class="flex items-center gap-2 text-2xl font-bold"><Icon name="quiz" class="text-peach-600" /> {titulo}</h2>
   <div class="mt-5 space-y-6">
     {perguntas.map((p, qi) => (
       <fieldset class="space-y-2" data-q data-certa={p.certa}>
@@ -41,7 +42,7 @@ const { perguntas, titulo = 'Teste o que aprendeu' } = Astro.props;
           });
           if (!ok) b.classList.add('!border-rose-300', '!bg-rose-100');
           q.querySelector('[data-why]')!.classList.remove('hidden');
-          if (respondidas === qs.length) score.textContent = `Você acertou ${acertos} de ${qs.length}. ${acertos === qs.length ? 'Perfeito! 🎉' : 'Releia as explicações e tente de novo.'}`;
+          if (respondidas === qs.length) score.textContent = `Você acertou ${acertos} de ${qs.length}. ${acertos === qs.length ? 'Muito bem!' : 'Releia as explicações e tente novamente.'}`;
         });
       });
     });

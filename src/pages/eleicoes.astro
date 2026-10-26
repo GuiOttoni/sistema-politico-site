@@ -2,78 +2,104 @@
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PageNav from '../components/PageNav.astro';
+import LevelBlock from '../components/LevelBlock.astro';
 import Section from '../components/Section.astro';
 import Callout from '../components/Callout.astro';
+import Icon from '../components/Icon.astro';
+import Fonte from '../components/Fonte.astro';
 import Quiz from '../components/Quiz.astro';
+import { art, L } from '../data/links';
 ---
 <Base title="Como o voto vira cadeira" slug="eleicoes">
   <PageHeader slug="eleicoes" />
 
-  <Section kicker="Duas lógicas" title="Majoritário x proporcional">
-    <div class="grid gap-4 lg:grid-cols-2">
-      <div class="card border-sky-300 bg-sky-50">
-        <span class="chip bg-sky-100 text-sky-600">Cargos do Executivo + Senado</span>
-        <h3 class="mt-3 text-2xl font-bold">🏆 Majoritário</h3>
-        <p class="prose-p mt-2">Vence quem tem a <strong>maioria dos votos válidos</strong> (brancos e nulos não contam).</p>
-        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">
-          <li><strong>Senador</strong> e <strong>prefeito de município com até 200 mil eleitores</strong>: turno único, maioria simples.</li>
-          <li><strong>Presidente, governador</strong> e <strong>prefeito de município com mais de 200 mil eleitores</strong>: precisa de mais de 50% dos válidos; se ninguém alcançar, há 2º turno entre os dois mais votados.</li>
-        </ul>
-      </div>
-      <div class="card border-mint-300 bg-mint-50">
-        <span class="chip bg-mint-100 text-mint-600">Deputados e vereadores</span>
-        <h3 class="mt-3 text-2xl font-bold">🧮 Proporcional de lista aberta</h3>
-        <p class="prose-p mt-2">O eleitor vota num candidato (<em>voto nominal</em>) ou na sigla (<em>voto de legenda</em>). As cadeiras são divididas primeiro entre <strong>partidos ou federações</strong>, de acordo com os votos totais. Dentro de cada partido, ocupam as vagas os candidatos mais votados.</p>
-      </div>
-    </div>
-  </Section>
-
-  <Section kicker="Calculadora" title="Simule a divisão das cadeiras">
-    <Fragment slot="intro">
-      <p>Mude os votos de cada partido e o número de cadeiras. A calculadora aplica as três fases: <strong>quociente eleitoral</strong> (QE = votos válidos ÷ cadeiras), <strong>quociente partidário</strong> (QP = votos do partido ÷ QE, ignorando a fração) e <strong>sobras</strong> pela regra das maiores médias (votos ÷ (QP + 1)).</p>
-    </Fragment>
-
-    <div class="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
-      <form class="card space-y-4" id="calc-form" onsubmit="return false">
-        <label class="block text-sm font-bold">Cadeiras em disputa
-          <input id="seats" type="number" min="1" max="70" value="8" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2 text-lg" />
-        </label>
-        <div class="space-y-2" id="partidos"></div>
-        <button type="button" class="btn" id="add">+ Adicionar partido</button>
-        <label class="flex items-start gap-3 rounded-2xl bg-butter-50 p-3 text-sm">
-          <input type="checkbox" id="barreira" class="mt-1 h-4 w-4" />
-          <span><strong>Aplicar a regra antiga</strong> (barreira de 80% do QE na disputa das sobras). Em 2026, após as ADIs 7228, 7263 e 7311, todos os partidos disputam a “sobra das sobras”.</span>
-        </label>
-      </form>
-
-      <div class="space-y-4">
-        <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="card bg-lilac-50"><p class="text-xs font-bold uppercase text-ink-soft">Votos válidos</p><p class="font-display text-2xl font-bold" id="r-validos">–</p></div>
-          <div class="card bg-sky-50"><p class="text-xs font-bold uppercase text-ink-soft">Quociente eleitoral</p><p class="font-display text-2xl font-bold" id="r-qe">–</p></div>
-          <div class="card bg-mint-50"><p class="text-xs font-bold uppercase text-ink-soft">Cadeiras</p><p class="font-display text-2xl font-bold" id="r-seats">–</p></div>
+  <LevelBlock nivel="basico">
+    <Section title="Dois sistemas de votação">
+      <Fragment slot="intro"><p>O Brasil usa dois sistemas, de acordo com o cargo.</p></Fragment>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="card border-sky-300 bg-sky-50">
+          <span class="chip bg-sky-100 text-sky-600">Presidente, governador, prefeito e senador</span>
+          <h3 class="mt-3 flex items-center gap-2 text-2xl font-bold"><Icon name="emoji_events" class="text-sky-600" /> Majoritário</h3>
+          <p class="prose-p mt-2">Vence o candidato com mais votos válidos. Votos em branco e nulos não entram na conta.</p>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">
+            <li><strong>Senador</strong> e <strong>prefeito de município com até 200 mil eleitores</strong>: turno único.</li>
+            <li><strong>Presidente</strong>, <strong>governador</strong> e <strong>prefeito de município com mais de 200 mil eleitores</strong>: é preciso mais de 50% dos votos válidos. Se ninguém conseguir, os dois mais votados disputam um 2º turno.</li>
+          </ul>
         </div>
-        <div class="card overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead><tr class="text-xs uppercase text-ink-soft"><th class="py-2">Partido</th><th>Votos</th><th>QP</th><th>Sobras</th><th>Total</th></tr></thead>
-            <tbody id="tabela"></tbody>
-          </table>
+        <div class="card border-mint-300 bg-mint-50">
+          <span class="chip bg-mint-100 text-mint-600">Deputados e vereadores</span>
+          <h3 class="mt-3 flex items-center gap-2 text-2xl font-bold"><Icon name="pie_chart" class="text-mint-600" /> Proporcional</h3>
+          <p class="prose-p mt-2">As cadeiras são divididas entre os partidos de acordo com o total de votos que cada um recebeu. O eleitor pode votar em um candidato ou na sigla do partido.</p>
+          <p class="prose-p">Dentro de cada partido, ficam com as vagas os candidatos mais votados.</p>
         </div>
-        <div id="cadeiras" class="flex flex-wrap gap-1.5" aria-label="Cadeiras ocupadas"></div>
-        <p class="text-sm text-ink-soft" id="aviso" aria-live="polite"></p>
       </div>
-    </div>
-  </Section>
+    </Section>
 
-  <Section kicker="Para guardar" title="O que o 2026 mudou nas sobras">
-    <Callout tone="peach" icon="🧑‍⚖️" title="STF e “sobra das sobras”">
-      <p>Antes, partidos que não alcançassem 80% do quociente eleitoral (e candidatos com menos de 20%) ficavam fora da última etapa de distribuição. O STF entendeu que isso violava o <strong>pluralismo político</strong>. A Resolução TSE nº 23.748/2026 aplica essa decisão e manda reprocessar o resultado sempre que a situação jurídica de uma candidatura mudar (por exemplo, um registro <em>sub judice</em>).</p>
-    </Callout>
-  </Section>
+    <Section title="Exemplo simples">
+      <Fragment slot="intro">
+        <p>Imagine uma cidade com <strong>10 cadeiras</strong> na Câmara de Vereadores e <strong>100.000 votos válidos</strong>. Cada cadeira “custa” cerca de 10.000 votos (esse valor é o <strong>quociente eleitoral</strong>). Um partido que tenha recebido 30.000 votos ganha, em princípio, 3 cadeiras. Se sobrarem cadeiras, elas são distribuídas por uma regra própria (as sobras). A calculadora, na parte avançada, mostra o cálculo completo.</p>
+      </Fragment>
+    </Section>
 
-  <Quiz perguntas={[
-    { q: 'Um município de 150 mil eleitores elege o prefeito…', opcoes: ['Em dois turnos, sempre', 'Em turno único, por maioria simples', 'Pela Câmara de Vereadores', 'Por sorteio entre os dois mais votados'], certa: 1, porque: 'Até 200 mil eleitores, turno único. Acima disso, é preciso maioria absoluta, com 2º turno se necessário.' },
-    { q: 'Como se calcula o quociente eleitoral?', opcoes: ['Votos do partido ÷ cadeiras', 'Votos válidos ÷ cadeiras', 'Votos totais ÷ partidos', 'Cadeiras ÷ votos válidos'], certa: 1, porque: 'QE = votos válidos da circunscrição ÷ número de cadeiras.' },
-    { q: 'Votos brancos e nulos entram no cálculo dos votos válidos?', opcoes: ['Sim', 'Não', 'Só os brancos', 'Só em eleições majoritárias'], certa: 1, porque: 'Votos válidos excluem brancos e nulos.' },
+    <Fonte itens={[art(14), art(29, '(prefeitos)'), art(77, '(Presidente)'), L.camaraProporcional, L.codigoEleitoral]} />
+  </LevelBlock>
+
+  <LevelBlock nivel="avancado">
+    <Section title="Calculadora do sistema proporcional">
+      <Fragment slot="intro">
+        <p>Altere os votos de cada partido e o número de cadeiras. A calculadora aplica três etapas:</p>
+        <ol class="mb-3 list-decimal space-y-1 pl-5 text-ink-soft">
+          <li><strong>Quociente eleitoral (QE)</strong> = votos válidos ÷ cadeiras. Frações iguais ou menores que 0,5 são desprezadas; maiores que 0,5 sobem para o inteiro seguinte (Código Eleitoral, art. 106).</li>
+          <li><strong>Quociente partidário (QP)</strong> = votos do partido ÷ QE, sem a fração (art. 107).</li>
+          <li><strong>Sobras</strong>: as cadeiras restantes vão, uma a uma, ao partido de maior média = votos ÷ (cadeiras já obtidas + 1).</li>
+        </ol>
+      </Fragment>
+
+      <div class="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
+        <form class="card space-y-4" id="calc-form" onsubmit="return false">
+          <label class="block text-sm font-bold">Cadeiras em disputa
+            <input id="seats" type="number" min="1" max="70" value="8" class="mt-1 w-full rounded-2xl border border-line bg-cream px-4 py-2 text-lg" />
+          </label>
+          <div class="space-y-2" id="partidos"></div>
+          <button type="button" class="btn" id="add"><Icon name="add" /> Adicionar partido</button>
+          <label class="flex items-start gap-3 rounded-2xl bg-butter-50 p-3 text-sm">
+            <input type="checkbox" id="barreira" class="mt-1 h-4 w-4" />
+            <span><strong>Aplicar a regra anterior ao STF</strong>: só podiam disputar as sobras os partidos com pelo menos 80% do QE. Hoje, todos os partidos disputam.</span>
+          </label>
+        </form>
+
+        <div class="space-y-4">
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="card bg-lilac-50"><p class="text-xs font-bold uppercase text-ink-soft">Votos válidos</p><p class="font-display text-2xl font-bold" id="r-validos">–</p></div>
+            <div class="card bg-sky-50"><p class="text-xs font-bold uppercase text-ink-soft">Quociente eleitoral</p><p class="font-display text-2xl font-bold" id="r-qe">–</p></div>
+            <div class="card bg-mint-50"><p class="text-xs font-bold uppercase text-ink-soft">Cadeiras</p><p class="font-display text-2xl font-bold" id="r-seats">–</p></div>
+          </div>
+          <div class="card overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead><tr class="text-xs uppercase text-ink-soft"><th class="py-2">Partido</th><th>Votos</th><th>QP</th><th>Sobras</th><th>Total</th></tr></thead>
+              <tbody id="tabela"></tbody>
+            </table>
+          </div>
+          <div id="cadeiras" class="flex flex-wrap gap-1.5" aria-label="Cadeiras ocupadas"></div>
+          <p class="text-sm text-ink-soft" id="aviso" aria-live="polite"></p>
+        </div>
+      </div>
+    </Section>
+
+    <Section title="As sobras eleitorais e o STF">
+      <Callout tone="peach" icon="gavel" title="Decisão de 2024, aplicada também às eleições de 2022">
+        <p>A Lei nº 14.211/2021 limitava a disputa das sobras a partidos com pelo menos 80% do quociente eleitoral (e a candidatos com pelo menos 20%). No julgamento das ADIs 7.228, 7.263 e 7.325 (2024), o STF considerou essas exigências incompatíveis com o pluralismo político e permitiu que todos os partidos disputem as sobras.</p>
+        <p>Em junho de 2025, o Plenário confirmou que a decisão vale também para o resultado das eleições de 2022. Por isso, sete deputados federais perderam o mandato e foram substituídos.</p>
+      </Callout>
+    </Section>
+
+    <Fonte itens={[L.codigoEleitoral, L.lei14211, L.camaraProporcional, L.stf, L.sobrasConjur]} />
+  </LevelBlock>
+
+  <Quiz id="quiz" perguntas={[
+    { q: 'Um município com 150 mil eleitores elege o prefeito…', opcoes: ['Em dois turnos, sempre', 'Em turno único, por maioria simples', 'Pela Câmara de Vereadores', 'Por sorteio entre os dois mais votados'], certa: 1, porque: 'Até 200 mil eleitores, há turno único. Acima disso, é preciso maioria absoluta, com 2º turno se necessário (art. 29, II).' },
+    { q: 'Como se calcula o quociente eleitoral?', opcoes: ['Votos do partido ÷ cadeiras', 'Votos válidos ÷ cadeiras', 'Votos totais ÷ partidos', 'Cadeiras ÷ votos válidos'], certa: 1, porque: 'QE = votos válidos ÷ número de cadeiras em disputa.' },
+    { q: 'Votos em branco e nulos entram nos votos válidos?', opcoes: ['Sim', 'Não', 'Só os brancos', 'Só nas eleições majoritárias'], certa: 1, porque: 'Votos válidos não incluem votos em branco e nulos.' },
   ]} />
 
   <PageNav slug="eleicoes" />
@@ -90,9 +116,9 @@ import Quiz from '../components/Quiz.astro';
     const addLinha = (nome: string, votos: number) => {
       const row = document.createElement('div');
       row.className = 'flex items-center gap-2';
-      row.innerHTML = `<input aria-label="Nome" class="min-w-0 flex-1 rounded-2xl border border-line bg-cream px-3 py-2 font-bold" value="${nome}" />
+      row.innerHTML = `<input aria-label="Nome do partido" class="min-w-0 flex-1 rounded-2xl border border-line bg-cream px-3 py-2 font-bold" value="${nome}" />
         <input aria-label="Votos" type="number" min="0" class="w-28 rounded-2xl border border-line bg-cream px-3 py-2" value="${votos}" />
-        <button type="button" class="btn !px-3" aria-label="Remover partido">✕</button>`;
+        <button type="button" class="btn !px-3" aria-label="Remover partido"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>`;
       row.querySelector('button')!.addEventListener('click', () => { row.remove(); calc(); });
       row.querySelectorAll('input').forEach((i) => i.addEventListener('input', calc));
       lista.appendChild(row);
@@ -111,10 +137,10 @@ import Quiz from '../components/Quiz.astro';
       $('tabela').innerHTML = r.linhas.map((l, i) => `<tr class="border-t border-line">
         <td class="py-2 font-bold"><span class="mr-2 inline-block h-3 w-3 rounded-full ${cores[i % cores.length]}"></span>${l.nome.replace(/</g, '&lt;')}</td>
         <td>${fmt.format(l.votos)}</td><td>${l.qp}</td><td>${l.sobras}</td><td class="font-extrabold">${l.total}</td></tr>`).join('');
-      $('cadeiras').innerHTML = r.linhas.flatMap((l, i) => Array.from({ length: l.total }, () => `<span class="grid h-8 w-8 place-items-center rounded-lg text-xs font-extrabold ${cores[i % cores.length]}">${l.nome.trim().charAt(l.nome.trim().length - 1)}</span>`)).join('');
+      $('cadeiras').innerHTML = r.linhas.flatMap((l, i) => Array.from({ length: l.total }, () => `<span class="grid h-8 w-8 place-items-center rounded-lg text-xs font-extrabold ${cores[i % cores.length]}">${l.nome.trim().charAt(l.nome.trim().length - 1).replace(/</g, '&lt;')}</span>`)).join('');
       $('aviso').textContent = r.naoDistribuidas
-        ? `${r.naoDistribuidas} cadeira(s) não distribuída(s): nenhum partido passou da barreira de 80% do QE.`
-        : r.validos === 0 ? 'Informe votos para ver o resultado.' : 'Dica: marque a regra antiga e veja quais partidos pequenos perdem a disputa das sobras.';
+        ? `${r.naoDistribuidas} cadeira(s) sem distribuição: nenhum partido atingiu 80% do QE.`
+        : r.validos === 0 ? 'Informe os votos para ver o resultado.' : 'Marque a regra anterior e veja quais partidos pequenos deixam de disputar as sobras.';
     }
 
     iniciais.forEach(([n, v]) => addLinha(n, v));

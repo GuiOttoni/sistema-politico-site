@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { trilha, href } from '../data/trilha';
 interface Props { slug: string }
 const { slug } = Astro.props;
@@ -9,19 +10,19 @@ const next = trilha[i + 1];
 <nav class="mt-14 grid gap-4 sm:grid-cols-2" aria-label="Navegação da trilha">
   {prev ? (
     <a href={href(prev.slug)} class="card transition hover:-translate-y-0.5">
-      <span class="text-xs font-bold uppercase text-ink-soft">← Anterior</span>
-      <span class="mt-1 block font-display text-lg font-bold">{prev.emoji} {prev.titulo}</span>
+      <span class="flex items-center gap-1 text-xs font-bold uppercase text-ink-soft"><Icon name="arrow_back" /> Anterior</span>
+      <span class="mt-1 flex items-center gap-2 font-display text-lg font-bold"><Icon name={prev.icon} class="text-lilac-600" /> {prev.titulo}</span>
     </a>
   ) : <span />}
   {next ? (
     <a href={href(next.slug)} class="card text-right transition hover:-translate-y-0.5">
-      <span class="text-xs font-bold uppercase text-ink-soft">Próxima →</span>
-      <span class="mt-1 block font-display text-lg font-bold">{next.emoji} {next.titulo}</span>
+      <span class="flex items-center justify-end gap-1 text-xs font-bold uppercase text-ink-soft">Próxima <Icon name="arrow_forward" /></span>
+      <span class="mt-1 flex items-center justify-end gap-2 font-display text-lg font-bold">{next.titulo} <Icon name={next.icon} class="text-lilac-600" /></span>
     </a>
   ) : (
-    <a href={href('fontes')} class="card text-right transition hover:-translate-y-0.5">
-      <span class="text-xs font-bold uppercase text-ink-soft">Fim da trilha 🎉</span>
-      <span class="mt-1 block font-display text-lg font-bold">Ver as fontes da pesquisa</span>
+    <a href={href('validacao')} class="card text-right transition hover:-translate-y-0.5">
+      <span class="flex items-center justify-end gap-1 text-xs font-bold uppercase text-ink-soft">Fim da trilha <Icon name="flag" /></span>
+      <span class="mt-1 flex items-center justify-end gap-2 font-display text-lg font-bold">Ver a conferência das informações <Icon name="fact_check" class="text-lilac-600" /></span>
     </a>
   )}
 </nav>

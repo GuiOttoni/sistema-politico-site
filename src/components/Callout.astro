@@ -1,10 +1,11 @@
 ---
+import Icon from './Icon.astro';
 import { tones, type Tone } from '../lib/tones';
 interface Props { tone?: Tone; icon?: string; title?: string }
-const { tone = 'butter', icon = '💡', title } = Astro.props;
+const { tone = 'butter', icon = 'lightbulb', title } = Astro.props;
 const t = tones[tone];
 ---
 <aside class={`rounded-3xl border ${t.border} ${t.bgSoft} p-5`}>
-  <p class={`font-extrabold ${t.text}`}>{icon} {title}</p>
+  <p class={`flex items-center gap-2 font-extrabold ${t.text}`}><Icon name={icon} /> {title}</p>
   <div class="prose-p mt-2 [&>*:last-child]:mb-0"><slot /></div>
 </aside>

@@ -1,11 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import fontes from '../data/fontes.json';
+import Icon from '../components/Icon.astro';
 ---
 <Base title="Fontes e referências" description="As 80 referências usadas na pesquisa que originou este site.">
   <section class="rounded-[2rem] border border-sky-300 bg-sky-50 p-6 sm:p-10">
-    <h1 class="text-3xl font-bold sm:text-5xl">🔗 Fontes e referências</h1>
-    <p class="mt-3 max-w-2xl text-lg text-ink-soft">As {fontes.length} referências citadas na pesquisa “Arquitetura Institucional e Dinâmica Política do Brasil”, na ordem original (os números das notas do texto remetem a elas). Há fontes oficiais (Planalto, Senado, Câmara, CNJ, TSE, STF) e fontes secundárias (artigos, portais de notícias e materiais de estudo).</p>
+    <h1 class="flex items-center gap-3 text-3xl font-bold sm:text-5xl"><Icon name="link" class="text-sky-600" /> Fontes e referências</h1>
+    <p class="mt-3 max-w-2xl text-lg text-ink-soft">Lista das {fontes.length} referências da pesquisa “Arquitetura Institucional e Dinâmica Política do Brasil”, na ordem original. Há fontes oficiais (Planalto, Senado, Câmara, CNJ, TSE, STF) e fontes de apoio (artigos, notícias e materiais de estudo). As fontes oficiais usadas em cada etapa estão no fim de cada seção. O resultado da checagem está na página <a class="font-bold underline" href="../validacao/">Conferência</a>.</p>
     <label class="mt-5 block max-w-md text-sm font-bold">Buscar
       <input id="q" type="search" placeholder="ex.: TSE, cláusula, Abranches…" class="mt-1 w-full rounded-full border border-line bg-white px-5 py-3 text-base" />
     </label>

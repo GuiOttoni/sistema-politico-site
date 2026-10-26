@@ -2,108 +2,144 @@
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PageNav from '../components/PageNav.astro';
+import LevelBlock from '../components/LevelBlock.astro';
 import Section from '../components/Section.astro';
 import Callout from '../components/Callout.astro';
 import InfoCard from '../components/InfoCard.astro';
+import Icon from '../components/Icon.astro';
+import Fonte from '../components/Fonte.astro';
 import Quiz from '../components/Quiz.astro';
-import { tones, type Tone } from '../lib/tones';
+import { type Tone } from '../lib/tones';
+import { art, L } from '../data/links';
 
 const origens = {
-  parlamentar: { rotulo: '🧑‍⚖️ Deputado ou senador', passo: 'Um parlamentar apresenta o projeto, com uma Justificação explicando por que a lei é necessária.' },
-  executivo: { rotulo: '🏢 Presidente da República', passo: 'O Executivo envia o projeto com uma Exposição de Motivos assinada por um Ministro de Estado. Algumas matérias (como as leis orçamentárias) são de iniciativa exclusiva do Executivo.' },
-  popular: { rotulo: '✍️ Cidadãos (iniciativa popular)', passo: 'Pelo menos 1% do eleitorado nacional, distribuído em ao menos 5 Estados, com não menos de 0,3% dos eleitores de cada um. O projeto deve tratar de um único assunto e não pode ser rejeitado por vício de forma.' },
+  parlamentar: { rotulo: 'Deputado ou senador', icon: 'person', passo: 'Um parlamentar apresenta o projeto, com uma justificação explicando por que a lei é necessária.' },
+  executivo: { rotulo: 'Presidente da República', icon: 'domain', passo: 'O Executivo envia o projeto com uma exposição de motivos assinada por um ministro de Estado. Algumas matérias, como as leis do orçamento, só podem ser propostas pelo Executivo.' },
+  popular: { rotulo: 'Cidadãos (iniciativa popular)', icon: 'groups', passo: 'Um grupo de cidadãos apresenta o projeto à Câmara dos Deputados, com assinaturas de pelo menos 1% do eleitorado nacional (veja os detalhes na parte avançada).' },
 } as const;
 
 const passos = [
-  { n: 2, emoji: '📥', titulo: 'Protocolo e comissões', txt: 'Entra pela Secretaria-Geral da Mesa. O presidente da Casa distribui o projeto às comissões temáticas (análise de mérito) e obrigatoriamente à CCJ (Comissão de Constituição e Justiça e de Cidadania), que examina constitucionalidade, juridicidade e técnica legislativa.' },
-  { n: 3, emoji: '✂️', titulo: 'Emendas e pareceres', txt: 'Parlamentares podem propor emendas: supressiva (tira trechos), substitutiva (troca grande parte), modificativa (muda só a redação) e aditiva (acrescenta). Emendas que aumentem despesa em projetos de iniciativa exclusiva do Executivo são inconstitucionais.' },
-  { n: 4, emoji: '🗳️', titulo: 'Plenário', txt: 'Com todos os pareceres prontos, o projeto vai à Ordem do Dia. A pauta é prerrogativa do presidente da Casa, ouvido o Colégio de Líderes. Lei ordinária: maioria simples, com maioria absoluta presente. Alguns projetos conclusivos nem vão a plenário.' },
-  { n: 5, emoji: '🔁', titulo: 'Casa revisora', txt: 'No Congresso, a outra Casa repete o caminho (comissões e plenário). Cada Casa revisa a outra: é o bicameralismo.' },
-  { n: 6, emoji: '🖊️', titulo: 'Sanção ou veto', txt: 'O chefe do Executivo pode sancionar (expressamente, ou tacitamente se deixar o prazo passar) ou vetar, total ou parcialmente, por inconstitucionalidade ou contrariedade ao interesse público. O veto volta ao Legislativo, que pode derrubá-lo por maioria absoluta em sessão conjunta.' },
-  { n: 7, emoji: '📰', titulo: 'Promulgação, publicação e vigência', txt: 'Com a promulgação e a publicação, a lei existe. Mas só produz efeitos quando entra em vigor: na data da publicação ou após um período de vacatio legis, para a sociedade se adaptar.' },
+  { n: 2, icon: 'inbox', titulo: 'Protocolo e comissões', txt: 'O projeto é registrado e enviado às comissões. As comissões temáticas analisam o conteúdo. A Comissão de Constituição e Justiça (CCJ) verifica se o projeto respeita a Constituição.' },
+  { n: 3, icon: 'edit_note', titulo: 'Emendas e pareceres', txt: 'Os parlamentares podem propor alterações (emendas). Cada comissão emite um parecer sobre o projeto.' },
+  { n: 4, icon: 'how_to_vote', titulo: 'Votação no Plenário', txt: 'Com os pareceres prontos, o projeto vai à votação. O presidente da Casa organiza a pauta, depois de ouvir os líderes dos partidos.' },
+  { n: 5, icon: 'sync', titulo: 'Outra Casa revisa', txt: 'No Congresso, a outra Casa (Câmara ou Senado) repete o processo. Cada Casa revisa o que a outra aprovou.' },
+  { n: 6, icon: 'draw', titulo: 'Sanção ou veto', txt: 'O chefe do Executivo pode sancionar (aprovar) o projeto ou vetá-lo. O veto volta ao Congresso, que pode derrubá-lo pelo voto da maioria absoluta de deputados e senadores.' },
+  { n: 7, icon: 'newspaper', titulo: 'Publicação e vigência', txt: 'Depois de promulgada e publicada, a lei passa a existir. Ela só produz efeitos quando entra em vigor, na data da publicação ou após um prazo (vacatio legis).' },
 ];
 
 const normas: { sigla: string; nome: string; tone: Tone; quorum: string; veto: string; nota: string }[] = [
-  { sigla: 'PEC', nome: 'Emenda à Constituição', tone: 'lilac', quorum: '3/5 (308 dep. + 49 sen.), 2 turnos em cada Casa', veto: 'Não — promulgada pelas Mesas', nota: 'Pode ser proposta por 1/3 dos deputados ou senadores, pelo Presidente ou por mais da metade das Assembleias.' },
-  { sigla: 'PLP', nome: 'Lei Complementar', tone: 'sky', quorum: 'Maioria absoluta (257 dep. + 41 sen.)', veto: 'Sim', nota: 'Regula matérias que a Constituição exige expressamente (ex.: Ficha Limpa, LC 135/2010). Não é “superior” à ordinária: tem campo próprio.' },
-  { sigla: 'PL', nome: 'Lei Ordinária', tone: 'mint', quorum: 'Maioria simples dos presentes', veto: 'Sim', nota: 'A regra geral. Pode tramitar de forma conclusiva nas comissões.' },
-  { sigla: 'MPV', nome: 'Medida Provisória', tone: 'peach', quorum: 'Maioria simples nas duas Casas, após Comissão Mista', veto: 'Só se virar PLV', nota: 'Tem força de lei na hora, em caso de relevância e urgência. Perde eficácia se não for votada no prazo e tranca a pauta após 45 dias.' },
-  { sigla: 'PDL', nome: 'Decreto Legislativo', tone: 'butter', quorum: 'Maioria simples', veto: 'Não', nota: 'Matérias de competência exclusiva do Congresso com efeito externo (tratados, contas). Também sustou atos do Executivo que exorbitem.' },
-  { sigla: 'PRC / PRS', nome: 'Resolução', tone: 'rose', quorum: 'Maioria simples (ou qualificado)', veto: 'Não', nota: 'Assuntos internos de cada Casa, como o Regimento. As do Senado fixam alíquotas tributárias.' },
+  { sigla: 'PEC', nome: 'Emenda à Constituição', tone: 'lilac', quorum: '3/5 dos votos (308 deputados e 49 senadores), em 2 turnos em cada Casa', veto: 'Não há veto: as Mesas da Câmara e do Senado promulgam', nota: 'Pode ser proposta por 1/3 dos deputados ou dos senadores, pelo Presidente ou por mais da metade das Assembleias Legislativas.' },
+  { sigla: 'PLP', nome: 'Lei Complementar', tone: 'sky', quorum: 'Maioria absoluta (257 deputados e 41 senadores)', veto: 'Sim', nota: 'Trata de temas que a Constituição manda regular por lei complementar. Não é “superior” à lei ordinária: cada uma tem seu campo.' },
+  { sigla: 'PL', nome: 'Lei Ordinária', tone: 'mint', quorum: 'Maioria simples dos presentes, com maioria absoluta presente', veto: 'Sim', nota: 'É a regra geral. Alguns projetos podem ser aprovados apenas nas comissões, sem ir ao Plenário.' },
+  { sigla: 'MPV', nome: 'Medida Provisória', tone: 'peach', quorum: 'Maioria simples em cada Casa, depois de parecer de comissão mista', veto: 'Só se for convertida em lei com alterações', nota: 'Tem força de lei imediata, em caso de relevância e urgência. Se não for votada no prazo, perde a eficácia. Depois de 45 dias, tranca a pauta.' },
+  { sigla: 'PDL', nome: 'Decreto Legislativo', tone: 'butter', quorum: 'Maioria simples', veto: 'Não', nota: 'Trata de temas de competência exclusiva do Congresso, como tratados internacionais e contas. Também pode sustar atos do Executivo que excedam o poder de regulamentar.' },
+  { sigla: 'PRC / PRS', nome: 'Resolução', tone: 'rose', quorum: 'Maioria simples (ou quórum especial, conforme o tema)', veto: 'Não', nota: 'Trata de assuntos internos de cada Casa, como o Regimento. As do Senado também fixam alíquotas de tributos.' },
+];
+
+const emendas = [
+  ['content_cut', 'Supressiva', 'Retira parte ou todo um dispositivo.'],
+  ['swap_horiz', 'Substitutiva', 'Troca grande parte do projeto, ou ele todo.'],
+  ['edit', 'Modificativa', 'Altera a redação sem mudar o sentido.'],
+  ['add_circle', 'Aditiva', 'Acrescenta novos termos a um artigo ou parágrafo.'],
 ];
 ---
-<Base title="Como nasce uma lei" slug="leis">
+<Base title="Como uma lei é criada" slug="leis">
   <PageHeader slug="leis" />
 
-  <Section kicker="Jornada" title="O caminho da lei, passo a passo">
-    <Fragment slot="intro">
-      <p>Primeiro escolha <strong>quem propõe</strong> o projeto. Depois avance pelos passos.</p>
-    </Fragment>
+  <LevelBlock nivel="basico">
+    <Section title="O caminho da lei, passo a passo">
+      <Fragment slot="intro">
+        <p>Primeiro escolha quem propõe o projeto. Depois, avance pelos passos para ver o caminho até a lei entrar em vigor.</p>
+      </Fragment>
 
-    <div class="flex flex-wrap gap-2" id="origem" role="group" aria-label="Quem propõe">
-      {Object.entries(origens).map(([k, o], i) => <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-k={k}>{o.rotulo}</button>)}
-    </div>
+      <div class="flex flex-wrap gap-2" id="origem" role="group" aria-label="Quem propõe">
+        {Object.entries(origens).map(([k, o], i) => <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-k={k}><Icon name={o.icon} /> {o.rotulo}</button>)}
+      </div>
 
-    <ol class="mt-6 space-y-3" id="jornada">
-      <li class="card flex gap-4 border-butter-300 bg-butter-50" data-passo="1">
-        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-butter-100 text-2xl">💡</span>
-        <div><p class="text-xs font-extrabold uppercase text-butter-600">Passo 1 · Iniciativa</p><p class="mt-1" id="passo1"></p></div>
-      </li>
-      {passos.map((p) => (
-        <li class="card hidden gap-4" data-passo={p.n}>
-          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-lilac-100 text-2xl">{p.emoji}</span>
-          <div><p class="text-xs font-extrabold uppercase text-lilac-600">Passo {p.n} · {p.titulo}</p><p class="mt-1 text-ink-soft">{p.txt}</p></div>
+      <ol class="mt-6 space-y-3" id="jornada">
+        <li class="card flex gap-4 border-butter-300 bg-butter-50" data-passo="1">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-butter-100 text-2xl text-butter-600"><Icon name="lightbulb" /></span>
+          <div><p class="text-xs font-extrabold uppercase text-butter-600">Passo 1 · Iniciativa</p><p class="mt-1" id="passo1"></p></div>
         </li>
-      ))}
-    </ol>
-    <div class="mt-4 flex gap-2">
-      <button type="button" class="btn" id="voltar">← Voltar</button>
-      <button type="button" class="btn !border-lilac-600 !bg-lilac-600 !text-white" id="avancar">Avançar →</button>
-      <span class="self-center text-sm font-bold text-ink-soft" id="contador" aria-live="polite"></span>
-    </div>
-  </Section>
+        {passos.map((p) => (
+          <li class="card hidden gap-4" data-passo={p.n}>
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-lilac-100 text-2xl text-lilac-600"><Icon name={p.icon} /></span>
+            <div><p class="text-xs font-extrabold uppercase text-lilac-600">Passo {p.n} · {p.titulo}</p><p class="mt-1 text-ink-soft">{p.txt}</p></div>
+          </li>
+        ))}
+      </ol>
+      <div class="mt-4 flex items-center gap-2">
+        <button type="button" class="btn" id="voltar"><Icon name="arrow_back" /> Voltar</button>
+        <button type="button" class="btn !border-lilac-600 !bg-lilac-600 !text-white" id="avancar">Avançar <Icon name="arrow_forward" /></button>
+        <span class="text-sm font-bold text-ink-soft" id="contador" aria-live="polite"></span>
+      </div>
+    </Section>
 
-  <Section kicker="Hierarquia e espécies" title="Os tipos de norma (Art. 59)">
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {normas.map((n) => (
-        <InfoCard tone={n.tone} emoji="📄" tag={n.sigla} title={n.nome}>
-          <p><strong>Quórum:</strong> {n.quorum}</p>
-          <p><strong>Sanção/veto:</strong> {n.veto}</p>
-          <p>{n.nota}</p>
-        </InfoCard>
-      ))}
-    </div>
-  </Section>
+    <Section title="Como você pode participar">
+      <Fragment slot="intro"><p>O cidadão pode acompanhar e influenciar o processo legislativo com estas ferramentas públicas:</p></Fragment>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <InfoCard tone="sky" icon="forum" title="e-Democracia"><p>Portal da Câmara onde cidadãos participam de audiências públicas interativas e debatem projetos com deputados.</p></InfoCard>
+        <InfoCard tone="mint" icon="receipt_long" title="Fiscalize o Orçamento"><p>Ferramenta da Câmara que gera relatórios sobre os gastos federais e os repasses da União a Estados e Municípios.</p></InfoCard>
+        <InfoCard tone="peach" icon="lock_open" title="Lei de Acesso à Informação"><p>Qualquer pessoa pode pedir informações a órgãos públicos pelo Serviço de Informação ao Cidadão (SIC), sem precisar dizer o motivo.</p></InfoCard>
+      </div>
+    </Section>
 
-  <Section kicker="Sua vez" title="Participação cidadã: o Art. 1º, parágrafo único, na prática">
-    <Fragment slot="intro">
-      <p>Em nível municipal, o projeto de iniciativa popular exige <strong>5% do eleitorado local</strong>. Coletar tantas assinaturas é difícil — mas já deu certo quatro vezes na esfera federal:</p>
-    </Fragment>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {[
-        ['🎭', 'Lei 8.930/1994', 'Incluiu o homicídio qualificado no rol de crimes hediondos (mobilização após o assassinato da atriz Daniella Perez).'],
-        ['🚫', 'Lei 9.840/1999', 'Combate à compra de votos: permite cassar registro ou diploma de quem captar voto de forma ilícita.'],
-        ['🏠', 'Lei 11.124/2005', 'Criou o Sistema e o Fundo Nacional de Habitação de Interesse Social.'],
-        ['🧼', 'LC 135/2010', 'Lei da Ficha Limpa: endureceu a inelegibilidade de condenados por órgãos colegiados.'],
-      ].map(([e, t, d]) => <div class="card bg-mint-50"><div class="text-3xl">{e}</div><h3 class="mt-2 font-bold">{t}</h3><p class="mt-1 text-sm text-ink-soft">{d}</p></div>)}
-    </div>
-    <h3 class="mt-8 text-xl font-bold">Ferramentas para você usar</h3>
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {[
-        ['💌', 'Sugestão Legislativa (SUG)', 'Qualquer entidade civil organizada (ONGs, sindicatos, associações) pode enviar à Câmara. Se aprovada em comissão, vira projeto de lei.'],
-        ['💬', 'e-Democracia', 'Portal que conecta cidadãos e deputados em audiências públicas interativas e na elaboração colaborativa de políticas.'],
-        ['🧾', 'Fiscalize o Orçamento', 'Gera relatórios sobre gastos federais e repasses da União a Estados e Municípios.'],
-        ['📞', 'Disque-Câmara', '0800 619 619.'],
-        ['🔓', 'Lei de Acesso à Informação (LAI)', 'Peça informações ao Serviço de Informação ao Cidadão (SIC) sem precisar justificar o pedido. Há recurso se negarem.'],
-      ].map(([e, t, d]) => <InfoCard tone="sky" emoji={e} title={t}><p>{d}</p></InfoCard>)}
-    </div>
-  </Section>
+    <Fonte itens={[art(59), art(61), art(66), L.camaraProcesso, L.eDemocracia, L.fiscalize, L.lai]} />
+  </LevelBlock>
 
-  <Quiz perguntas={[
-    { q: 'Qual comissão avalia obrigatoriamente se um projeto respeita a Constituição?', opcoes: ['Comissão Mista', 'CCJ', 'CPI', 'Comissão de Finanças'], certa: 1, porque: 'A CCJ examina constitucionalidade, juridicidade e técnica legislativa.' },
-    { q: 'O presidente veta um projeto. O que acontece?', opcoes: ['A lei morre definitivamente', 'O veto volta ao Congresso, que pode derrubá-lo por maioria absoluta', 'O STF decide', 'O projeto recomeça do zero'], certa: 1, porque: 'Em sessão conjunta, a maioria absoluta rejeita o veto.' },
-    { q: 'Quantas assinaturas, no mínimo, para um projeto de lei federal de iniciativa popular?', opcoes: ['1% do eleitorado nacional, em 5+ Estados', '5% do eleitorado', '100 mil', '0,3% do eleitorado total'], certa: 0, porque: '1% do eleitorado nacional, distribuído em pelo menos cinco Estados, com no mínimo 0,3% dos eleitores de cada um.' },
-    { q: '“Vacatio legis” é…', opcoes: ['A anulação da lei', 'O prazo entre a publicação e a entrada em vigor', 'Um tipo de veto', 'A pauta do plenário'], certa: 1, porque: 'É o período para a sociedade se adaptar antes que a lei produza efeitos.' },
+  <LevelBlock nivel="avancado">
+    <Section title="Os tipos de norma (art. 59)">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {normas.map((n) => (
+          <InfoCard tone={n.tone} icon="description" tag={n.sigla} title={n.nome}>
+            <p><strong>Quórum:</strong> {n.quorum}</p>
+            <p><strong>Sanção ou veto:</strong> {n.veto}</p>
+            <p>{n.nota}</p>
+          </InfoCard>
+        ))}
+      </div>
+    </Section>
+
+    <Section title="Os quatro tipos de emenda a um projeto">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {emendas.map(([i, t, d]) => <div class="card bg-white"><Icon name={i} class="text-3xl text-lilac-600" /><h3 class="mt-2 font-bold">{t}</h3><p class="mt-1 text-sm text-ink-soft">{d}</p></div>)}
+      </div>
+      <div class="mt-4">
+        <Callout tone="butter" icon="info" title="Limite importante">
+          <p>Não são permitidas emendas que aumentem a despesa em projetos de iniciativa exclusiva do Presidente da República (art. 63, I), salvo regras específicas para as leis orçamentárias.</p>
+        </Callout>
+      </div>
+    </Section>
+
+    <Section title="Iniciativa popular: regras e exemplos">
+      <Fragment slot="intro">
+        <p>No âmbito federal, o projeto de iniciativa popular exige a assinatura de <strong>1% do eleitorado nacional</strong>, distribuído por pelo menos <strong>5 Estados</strong>, com <strong>não menos de 0,3% dos eleitores de cada um</strong> (art. 61, § 2º). Nos Municípios, são exigidos 5% do eleitorado (art. 29, XIII).</p>
+        <p>Além disso, entidades civis organizadas podem enviar uma <strong>Sugestão Legislativa (SUG)</strong> à Câmara. Se for aprovada em comissão, ela se transforma em projeto de lei.</p>
+        <p>Leis que se originaram de iniciativa popular:</p>
+      </Fragment>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          ['Lei 8.930/1994', 'Incluiu o homicídio qualificado entre os crimes hediondos.', L.lei8930],
+          ['Lei 9.840/1999', 'Combate à compra de votos: permite cassar registro ou diploma em caso de captação ilícita de sufrágio.', L.lei9840],
+          ['Lei 11.124/2005', 'Criou o Sistema e o Fundo Nacional de Habitação de Interesse Social.', L.lei11124],
+          ['LC 135/2010', 'Lei da Ficha Limpa: ampliou as hipóteses de inelegibilidade.', L.lc135],
+        ].map(([t, d, link]) => (
+          <div class="card bg-mint-50">
+            <h3 class="font-bold">{t}</h3><p class="mt-1 text-sm text-ink-soft">{d}</p>
+            <a href={(link as { url: string }).url} target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-mint-600 underline"><Icon name="open_in_new" /> Ver a lei no Planalto</a>
+          </div>
+        ))}
+      </div>
+    </Section>
+
+    <Fonte itens={[art(59), art('61', '(§ 2º: iniciativa popular)'), art(62, '(Medidas Provisórias)'), art(63), art(64), art(65), art(66), L.lei9709, L.lc95, L.manualRedacao, L.camaraProcesso]} />
+  </LevelBlock>
+
+  <Quiz id="quiz" perguntas={[
+    { q: 'Qual comissão avalia se um projeto respeita a Constituição?', opcoes: ['Comissão Mista', 'CCJ', 'CPI', 'Comissão de Finanças'], certa: 1, porque: 'A Comissão de Constituição e Justiça e de Cidadania (CCJ) examina a constitucionalidade e a técnica legislativa.' },
+    { q: 'O presidente veta um projeto. O que acontece?', opcoes: ['A lei é encerrada definitivamente', 'O veto volta ao Congresso, que pode derrubá-lo por maioria absoluta', 'O STF decide', 'O projeto recomeça do zero'], certa: 1, porque: 'Em sessão conjunta, a maioria absoluta de deputados e senadores pode rejeitar o veto (art. 66, § 4º).' },
+    { q: 'Quantas assinaturas são necessárias para um projeto federal de iniciativa popular?', opcoes: ['1% do eleitorado nacional, em pelo menos 5 Estados', '5% do eleitorado', '100 mil assinaturas', '0,3% do eleitorado total'], certa: 0, porque: 'Art. 61, § 2º: 1% do eleitorado nacional, em ao menos 5 Estados, com 0,3% dos eleitores de cada um.' },
+    { q: 'O que é “vacatio legis”?', opcoes: ['A anulação da lei', 'O prazo entre a publicação e o início da vigência da lei', 'Um tipo de veto', 'A pauta do Plenário'], certa: 1, porque: 'É o período para a sociedade se adaptar antes que a lei produza efeitos.' },
   ]} />
 
   <PageNav slug="leis" />

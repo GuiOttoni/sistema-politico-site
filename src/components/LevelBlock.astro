@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+interface Props { nivel: 'basico' | 'avancado' }
+const { nivel } = Astro.props;
+const basico = nivel === 'basico';
+---
+<section id={nivel} class={`mt-14 scroll-mt-24 rounded-[2rem] border p-5 sm:p-8 ${basico ? 'border-mint-300 bg-mint-50/60' : 'border-dashed border-lilac-300 bg-lilac-50/70'}`}>
+  <header class="flex flex-wrap items-center gap-3">
+    <span class={`chip !px-4 !py-1.5 !text-sm ${basico ? 'bg-mint-100 text-mint-600' : 'bg-lilac-100 text-lilac-600'}`}>
+      <Icon name={basico ? 'school' : 'psychology'} /> {basico ? 'Básico' : 'Avançado'}
+    </span>
+    <p class="text-sm text-ink-soft">
+      {basico ? 'O essencial, em linguagem simples.' : 'Detalhes técnicos. Pode ser lido depois, sem perder o essencial.'}
+    </p>
+  </header>
+  <slot />
+</section>

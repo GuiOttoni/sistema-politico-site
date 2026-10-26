@@ -2,36 +2,43 @@
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PageNav from '../components/PageNav.astro';
+import LevelBlock from '../components/LevelBlock.astro';
 import Section from '../components/Section.astro';
 import Callout from '../components/Callout.astro';
+import Icon from '../components/Icon.astro';
+import Fonte from '../components/Fonte.astro';
 import Quiz from '../components/Quiz.astro';
 import { tones, type Tone } from '../lib/tones';
+import { art, L } from '../data/links';
 
-const poderes: Record<string, { nome: string; emoji: string; tone: Tone; quem: string; tipicas: string[]; atipicas: string[] }> = {
-  leg: { nome: 'Legislativo', emoji: '📝', tone: 'sky', quem: 'Congresso Nacional (Câmara dos Deputados + Senado). Nos Estados: Assembleias; no DF: Câmara Legislativa; nos Municípios: Câmaras de Vereadores.',
-    tipicas: ['Elaborar leis', 'Fiscalizar contas, finanças e orçamento do Executivo'],
-    atipicas: ['Administrar: organiza seus serviços, cargos e licitações', 'Julgar: o Senado julga presidente e ministros do STF em crimes de responsabilidade'] },
-  exe: { nome: 'Executivo', emoji: '🏢', tone: 'mint', quem: 'Presidente, vice e ministros. Nos Estados: governadores e secretários; nos Municípios: prefeitos e secretários.',
-    tipicas: ['Administrar a máquina pública', 'Executar as leis e as políticas públicas', 'Cuidar do orçamento'],
-    atipicas: ['Legislar: edita Medidas Provisórias e decretos regulamentares', 'Julgar: processos administrativos disciplinares e fiscais'] },
-  jud: { nome: 'Judiciário', emoji: '⚖️', tone: 'peach', quem: 'STF, STJ, TST, TSE, STM, tribunais regionais, juízes e juízas. É um poder técnico: entra-se por concurso (exceto quinto constitucional e nomeações dos tribunais superiores).',
-    tipicas: ['Julgar conflitos com força de “coisa julgada”', 'Proteger a Constituição e os direitos'],
-    atipicas: ['Legislar: escreve o regimento interno dos tribunais', 'Administrar: gere servidores, compras e orçamento do próprio Judiciário'] },
+const poderes: Record<string, { nome: string; icon: string; tone: Tone; resumo: string; quem: string; tipicas: string[]; atipicas: string[] }> = {
+  leg: { nome: 'Legislativo', icon: 'edit_document', tone: 'sky', resumo: 'Faz as leis e fiscaliza o governo.',
+    quem: 'Na União: Congresso Nacional (Câmara dos Deputados e Senado). Nos Estados: Assembleias Legislativas. No Distrito Federal: Câmara Legislativa. Nos Municípios: Câmaras de Vereadores.',
+    tipicas: ['Elaborar as leis', 'Fiscalizar as contas, as finanças e o orçamento do Executivo'],
+    atipicas: ['Administrar: organiza os próprios serviços, nomeia servidores e faz licitações', 'Julgar: o Senado julga o Presidente e ministros do STF em crimes de responsabilidade'] },
+  exe: { nome: 'Executivo', icon: 'domain', tone: 'mint', resumo: 'Administra o país e executa as leis.',
+    quem: 'Na União: Presidente, Vice-Presidente e ministros. Nos Estados e no DF: governadores e secretários. Nos Municípios: prefeitos e secretários.',
+    tipicas: ['Administrar a máquina pública', 'Executar as leis e as políticas públicas', 'Gerir o orçamento'],
+    atipicas: ['Legislar: edita Medidas Provisórias e decretos regulamentares', 'Julgar: decide em processos administrativos disciplinares e fiscais'] },
+  jud: { nome: 'Judiciário', icon: 'gavel', tone: 'peach', resumo: 'Resolve conflitos e protege os direitos.',
+    quem: 'STF, STJ, TST, TSE, STM, tribunais regionais e juízes. Os magistrados entram por concurso público (exceto o quinto constitucional e as nomeações para os tribunais superiores).',
+    tipicas: ['Julgar conflitos, com decisão definitiva (coisa julgada)', 'Proteger a Constituição e os direitos'],
+    atipicas: ['Legislar: escreve o regimento interno dos tribunais', 'Administrar: gere servidores, compras e o orçamento do próprio Judiciário'] },
 };
 
-// Quem controla quem: matriz do PDF (freios e contrapesos).
+// Quem controla quem (art. 2º e demais dispositivos citados nas fontes).
 const freios: Record<string, Record<string, string>> = {
   leg: {
-    exe: 'Aprecia vetos presidenciais; aprova ou rejeita Medidas Provisórias; julga as contas do Presidente todo ano; instaura CPIs; autoriza guerra/paz; processa impeachment.',
-    jud: 'O Senado sabatina e aprova indicados ao STF e tribunais superiores; processa e julga ministros do STF e membros do CNJ por crimes de responsabilidade; vota o orçamento do Judiciário.',
+    exe: 'Analisa os vetos do Presidente; aprova ou rejeita Medidas Provisórias; julga as contas do Presidente a cada ano; pode criar CPIs; autoriza declaração de guerra e paz; processa o impeachment.',
+    jud: 'O Senado sabatina e aprova os indicados ao STF e aos tribunais superiores, e julga ministros do STF e membros do CNJ por crimes de responsabilidade. O Congresso também vota o orçamento do Judiciário.',
   },
   exe: {
-    leg: 'Sanciona ou veta (total ou parcialmente) os projetos aprovados; tem iniciativa privativa de leis orçamentárias e de estrutura administrativa.',
-    jud: 'Nomeia ministros do STF e tribunais superiores (depois da aprovação do Senado) e os magistrados do quinto constitucional nos tribunais regionais.',
+    leg: 'Sanciona ou veta (total ou parcialmente) os projetos aprovados pelo Congresso. Tem a iniciativa exclusiva das leis orçamentárias e de organização administrativa.',
+    jud: 'Nomeia os ministros do STF e dos tribunais superiores (depois da aprovação do Senado) e os magistrados do quinto constitucional nos tribunais regionais.',
   },
   jud: {
-    leg: 'Controla a constitucionalidade (antes ou depois): pode invalidar leis ou atos do Congresso que violem a Constituição.',
-    exe: 'Controla a legalidade e a constitucionalidade de decretos, portarias e atos administrativos; julga o Presidente nos crimes comuns.',
+    leg: 'Controla a constitucionalidade: pode invalidar leis ou atos do Congresso que violem a Constituição.',
+    exe: 'Controla a legalidade e a constitucionalidade de decretos, portarias e atos administrativos, e julga o Presidente nos crimes comuns.',
   },
 };
 const ordem = ['leg', 'exe', 'jud'];
@@ -39,80 +46,111 @@ const ordem = ['leg', 'exe', 'jud'];
 <Base title="Os Três Poderes" slug="poderes">
   <PageHeader slug="poderes" />
 
-  <Section kicker="Art. 2º" title="Independentes e harmônicos">
-    <Fragment slot="intro">
-      <p>A Constituição adota a tripartição clássica (de Montesquieu): <strong>Legislativo, Executivo e Judiciário</strong>. <strong>Independentes</strong> = cada um tem auto-organização, autonomia financeira e ninguém manda em ninguém. <strong>Harmônicos</strong> = devem cooperar e se vigiar mutuamente para impedir o abuso de qualquer um.</p>
-      <p>Clique em um Poder para ver o que faz como atividade principal (<em>função típica</em>) e o que faz “de lado” (<em>função atípica</em>).</p>
-    </Fragment>
+  <LevelBlock nivel="basico">
+    <Section title="Por que existem três Poderes?">
+      <Fragment slot="intro">
+        <p>Para evitar que uma só pessoa ou instituição tenha poder demais, a Constituição (art. 2º) divide o poder do Estado em três: <strong>Legislativo, Executivo e Judiciário</strong>.</p>
+        <p>Eles são <strong>independentes</strong> (um não manda no outro) e <strong>harmônicos</strong> (devem cooperar e se fiscalizar). Clique em cada Poder para ver quem o forma e qual é a sua função principal.</p>
+      </Fragment>
 
-    <div role="tablist" aria-label="Poderes" class="flex flex-wrap gap-2" id="tabs-poder">
+      <div role="tablist" aria-label="Poderes" class="flex flex-wrap gap-2" id="tabs-poder">
+        {ordem.map((k, i) => (
+          <button role="tab" type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-selected={i === 0} data-poder={k}><Icon name={poderes[k].icon} /> {poderes[k].nome}</button>
+        ))}
+      </div>
+      {ordem.map((k, i) => {
+        const p = poderes[k];
+        const t = tones[p.tone];
+        return (
+          <div role="tabpanel" data-painel={k} class={`mt-4 rounded-3xl border ${t.border} ${t.bgSoft} p-6 ${i === 0 ? '' : 'hidden'}`}>
+            <h3 class="flex items-center gap-2 text-2xl font-bold"><Icon name={p.icon} class={t.text} /> {p.nome}</h3>
+            <p class="mt-1 text-lg font-bold">{p.resumo}</p>
+            <p class="prose-p mt-3"><strong>Quem faz parte:</strong> {p.quem}</p>
+            <div class="card mt-3"><p class={`flex items-center gap-2 font-extrabold ${t.text}`}><Icon name="star" /> Função principal (típica)</p><ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">{p.tipicas.map((x) => <li>{x}</li>)}</ul></div>
+          </div>
+        );
+      })}
+    </Section>
+
+    <Section title="Exemplo do dia a dia">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="card bg-sky-50"><p class="font-extrabold text-sky-600">1. Legislativo</p><p class="mt-1 text-sm text-ink-soft">O Congresso aprova uma lei sobre um tema, por exemplo o trânsito.</p></div>
+        <div class="card bg-mint-50"><p class="font-extrabold text-mint-600">2. Executivo</p><p class="mt-1 text-sm text-ink-soft">O governo sanciona a lei e organiza os órgãos que vão aplicá-la.</p></div>
+        <div class="card bg-peach-50"><p class="font-extrabold text-peach-600">3. Judiciário</p><p class="mt-1 text-sm text-ink-soft">Se houver conflito sobre a lei, um juiz decide o caso concreto.</p></div>
+      </div>
+    </Section>
+
+    <Fonte itens={[art(2), art(44, '(Legislativo)'), art(76, '(Executivo)'), art(92, '(Judiciário)'), L.senadoGuia]} />
+  </LevelBlock>
+
+  <LevelBlock nivel="avancado">
+    <Section title="Funções típicas e atípicas">
+      <Fragment slot="intro">
+        <p>Cada Poder tem uma função <strong>típica</strong> (a principal) e também exerce, de forma secundária, funções <strong>atípicas</strong> que pertencem a outro Poder. Escolha um Poder abaixo.</p>
+      </Fragment>
+      <div class="flex flex-wrap gap-2" id="tabs-atip" role="group" aria-label="Poder">
+        {ordem.map((k, i) => <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-a={k}><Icon name={poderes[k].icon} /> {poderes[k].nome}</button>)}
+      </div>
       {ordem.map((k, i) => (
-        <button role="tab" type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-selected={i === 0} data-poder={k}>{poderes[k].emoji} {poderes[k].nome}</button>
+        <div data-atip={k} class={`mt-3 grid gap-4 sm:grid-cols-2 ${i === 0 ? '' : 'hidden'}`}>
+          <div class="card"><p class="flex items-center gap-2 font-extrabold"><Icon name="star" class="text-lilac-600" /> Típicas</p><ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">{poderes[k].tipicas.map((x) => <li>{x}</li>)}</ul></div>
+          <div class="card"><p class="flex items-center gap-2 font-extrabold"><Icon name="shuffle" class="text-lilac-600" /> Atípicas</p><ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">{poderes[k].atipicas.map((x) => <li>{x}</li>)}</ul></div>
+        </div>
       ))}
-    </div>
-    {ordem.map((k, i) => {
-      const p = poderes[k];
-      const t = tones[p.tone];
-      return (
-        <div role="tabpanel" data-painel={k} class={`mt-4 rounded-3xl border ${t.border} ${t.bgSoft} p-6 ${i === 0 ? '' : 'hidden'}`}>
-          <h3 class="text-2xl font-bold">{p.emoji} {p.nome}</h3>
-          <p class="prose-p mt-2"><strong>Quem é:</strong> {p.quem}</p>
-          <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <div class="card"><p class={`font-extrabold ${t.text}`}>⭐ Funções típicas</p><ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">{p.tipicas.map((x) => <li>{x}</li>)}</ul></div>
-            <div class="card"><p class="font-extrabold text-ink-soft">🔀 Funções atípicas</p><ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-soft">{p.atipicas.map((x) => <li>{x}</li>)}</ul></div>
+    </Section>
+
+    <Section title="Freios e contrapesos: quem controla quem?">
+      <Fragment slot="intro"><p>Escolha qual Poder controla e qual é controlado.</p></Fragment>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <p class="mb-2 text-sm font-bold text-ink-soft">O Poder que controla</p>
+          <div class="flex flex-wrap gap-2" id="de">
+            {ordem.map((k, i) => <button type="button" class={`btn ${i === 1 ? 'is-active' : ''}`} aria-pressed={i === 1} data-v={k}><Icon name={poderes[k].icon} /> {poderes[k].nome}</button>)}
           </div>
         </div>
-      );
-    })}
-  </Section>
-
-  <Section kicker="Interativo" title="Freios e contrapesos: quem controla quem?">
-    <Fragment slot="intro"><p>Escolha quem controla e quem é controlado.</p></Fragment>
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div>
-        <p class="mb-2 text-sm font-bold text-ink-soft">Quem controla…</p>
-        <div class="flex flex-wrap gap-2" id="de">
-          {ordem.map((k, i) => <button type="button" class={`btn ${i === 1 ? 'is-active' : ''}`} aria-pressed={i === 1} data-v={k}>{poderes[k].emoji} {poderes[k].nome}</button>)}
+        <div>
+          <p class="mb-2 text-sm font-bold text-ink-soft">O Poder controlado</p>
+          <div class="flex flex-wrap gap-2" id="para">
+            {ordem.map((k, i) => <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-v={k}><Icon name={poderes[k].icon} /> {poderes[k].nome}</button>)}
+          </div>
         </div>
       </div>
-      <div>
-        <p class="mb-2 text-sm font-bold text-ink-soft">…quem?</p>
-        <div class="flex flex-wrap gap-2" id="para">
-          {ordem.map((k, i) => <button type="button" class={`btn ${i === 0 ? 'is-active' : ''}`} aria-pressed={i === 0} data-v={k}>{poderes[k].emoji} {poderes[k].nome}</button>)}
-        </div>
+      <div class="card mt-5 min-h-24 bg-white" aria-live="polite"><p id="freio-out" class="text-lg"></p></div>
+      <div class="mt-5">
+        <Callout tone="lilac" icon="sync_alt" title="O controle gera negociação">
+          <p>Quando o Presidente veta um projeto, o debate continua: o Congresso pode derrubar o veto, em sessão conjunta, por maioria absoluta dos deputados e senadores (art. 66, § 4º). E, como o Senado precisa aprovar os indicados ao STF, o Presidente precisa considerar a força dos partidos ao escolher.</p>
+        </Callout>
       </div>
-    </div>
-    <div class="card mt-5 min-h-24 bg-white" aria-live="polite"><p id="freio-out" class="text-lg"></p></div>
-    <div class="mt-5">
-      <Callout tone="lilac" icon="🔄" title="Freio não é só trava — é negociação">
-        <p>Quando o presidente veta um projeto, o debate não acaba: o Congresso pode derrubar o veto em sessão conjunta, por maioria absoluta. E como o Senado precisa aprovar os indicados ao STF, o presidente calibra suas escolhas conforme a força dos partidos.</p>
-      </Callout>
-    </div>
-  </Section>
+    </Section>
 
-  <Quiz perguntas={[
-    { q: 'Quem sanciona ou veta um projeto de lei aprovado pelo Congresso?', opcoes: ['O Supremo Tribunal Federal', 'O Presidente da República', 'O Presidente do Senado', 'O TCU'], certa: 1, porque: 'A sanção e o veto são do chefe do Executivo — e o Congresso pode rejeitar o veto depois.' },
-    { q: 'Um juiz declara que uma lei viola a Constituição. Que mecanismo é esse?', opcoes: ['Controle de constitucionalidade', 'Impeachment', 'Veto', 'Sabatina'], certa: 0, porque: 'O Judiciário controla se leis e atos respeitam a Constituição.' },
-    { q: 'O Executivo edita uma Medida Provisória. Que tipo de função é essa?', opcoes: ['Típica do Executivo', 'Atípica: legislativa', 'Atípica: julgadora', 'Típica do Legislativo'], certa: 1, porque: 'Legislar é função típica do Legislativo; o Executivo faz isso excepcionalmente, com MPs e decretos.' },
+    <Fonte itens={[art(52, '(Senado)'), art(66), art(84), art(101, '(STF)'), art(102), L.camaraProcesso, L.senadoParlamentar]} />
+  </LevelBlock>
+
+  <Quiz id="quiz" perguntas={[
+    { q: 'Quem sanciona ou veta um projeto de lei aprovado pelo Congresso?', opcoes: ['O Supremo Tribunal Federal', 'O Presidente da República', 'O Presidente do Senado', 'O TCU'], certa: 1, porque: 'A sanção e o veto cabem ao chefe do Executivo (art. 66). O Congresso pode derrubar o veto depois.' },
+    { q: 'Um juiz declara que uma lei viola a Constituição. Como se chama esse mecanismo?', opcoes: ['Controle de constitucionalidade', 'Impeachment', 'Veto', 'Sabatina'], certa: 0, porque: 'O Judiciário controla se leis e atos respeitam a Constituição.' },
+    { q: 'O Executivo edita uma Medida Provisória. Que tipo de função é essa?', opcoes: ['Típica do Executivo', 'Atípica: legislativa', 'Atípica: julgadora', 'Típica do Legislativo'], certa: 1, porque: 'Legislar é função típica do Legislativo. O Executivo faz isso de forma excepcional, por Medida Provisória (art. 62).' },
   ]} />
 
   <PageNav slug="poderes" />
 
   <script define:vars={{ freios, poderes }}>
-    // Abas dos poderes
-    const tabs = document.querySelectorAll('[data-poder]');
-    tabs.forEach((b) => b.addEventListener('click', () => {
-      tabs.forEach((x) => { x.classList.toggle('is-active', x === b); x.setAttribute('aria-selected', String(x === b)); });
-      document.querySelectorAll('[data-painel]').forEach((p) => p.classList.toggle('hidden', p.dataset.painel !== b.dataset.poder));
-    }));
+    const grupo = (sel, attr, painel, key) => {
+      const tabs = document.querySelectorAll(sel);
+      tabs.forEach((b) => b.addEventListener('click', () => {
+        tabs.forEach((x) => { const on = x === b; x.classList.toggle('is-active', on); x.setAttribute('aria-selected', String(on)); x.setAttribute('aria-pressed', String(on)); });
+        document.querySelectorAll(`[${painel}]`).forEach((p) => p.classList.toggle('hidden', p.getAttribute(painel) !== b.dataset[key]));
+      }));
+    };
+    grupo('[data-poder]', 'data-poder', 'data-painel', 'poder');
+    grupo('[data-a]', 'data-a', 'data-atip', 'a');
 
-    // Freios e contrapesos
     let de = 'exe', para = 'leg';
     const out = document.getElementById('freio-out');
     const render = () => {
       out.textContent = de === para
-        ? 'Escolha dois Poderes diferentes. Cada Poder também se organiza internamente, mas o sistema de freios e contrapesos acontece entre eles.'
-        : `${poderes[de].emoji} ${poderes[de].nome} → ${poderes[para].emoji} ${poderes[para].nome}: ${freios[de][para]}`;
+        ? 'Escolha dois Poderes diferentes. Cada Poder também se controla internamente, mas os freios e contrapesos acontecem entre eles.'
+        : `${poderes[de].nome} sobre ${poderes[para].nome}: ${freios[de][para]}`;
     };
     const wire = (id, set) => {
       const btns = document.querySelectorAll(`#${id} button`);

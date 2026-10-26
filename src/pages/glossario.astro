@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { href } from '../data/trilha';
+import Icon from '../components/Icon.astro';
 
 const termos: [string, string, string][] = [
   ['Accountability', 'Dever de prestar contas e responder pelos atos. Ideia central da República.', 'constituicao'],
@@ -8,9 +9,9 @@ const termos: [string, string, string][] = [
   ['Bicameralismo', 'Parlamento com duas Casas. No Brasil federal: Câmara dos Deputados e Senado. Estados e Municípios têm uma só Casa (unicameralismo).', 'poderes'],
   ['Cláusula de desempenho (barreira)', 'Mínimo de votos ou deputados para o partido ter Fundo Partidário e tempo de rádio/TV (EC 97/2017).', 'partidos'],
   ['Cláusula pétrea', 'Tema que nem emenda constitucional pode abolir: federação, voto direto/secreto/universal/periódico, separação dos Poderes e direitos individuais (Art. 60, § 4º).', 'constituicao'],
-  ['Coalizão', 'Aliança de partidos que sustenta o governo no Congresso, normalmente em troca de cargos e participação no governo.', 'coalizao'],
+  ['Coalizão', 'Aliança de partidos que apoia o governo no Congresso e, em geral, participa dele com ministérios e cargos.', 'coalizao'],
   ['Competência concorrente', 'União, Estados e DF legislam juntos: a União fixa normas gerais (Art. 24).', 'federacao'],
-  ['Competência privativa', 'Só a União legisla (Art. 22), mas pode delegar pontos a Estados por lei complementar.', 'federacao'],
+  ['Competência privativa', 'Só a União faz a lei (art. 22), mas uma lei complementar pode autorizar os Estados a legislar sobre pontos específicos.', 'federacao'],
   ['Controle de constitucionalidade', 'Verificação, pelo Judiciário, de que leis e atos respeitam a Constituição.', 'poderes'],
   ['CPI', 'Comissão Parlamentar de Inquérito: investiga fatos determinados. Pode ser de uma Casa ou mista (CPMI).', 'poderes'],
   ['Emenda impositiva', 'Emenda do parlamentar ao Orçamento cuja execução é obrigatória.', 'coalizao'],
@@ -41,8 +42,8 @@ const ordenados = termos.sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
 ---
 <Base title="Glossário" description="Termos do sistema político brasileiro explicados de forma simples.">
   <section class="rounded-[2rem] border border-butter-300 bg-butter-50 p-6 sm:p-10">
-    <h1 class="text-3xl font-bold sm:text-5xl">📖 Glossário</h1>
-    <p class="mt-3 max-w-2xl text-lg text-ink-soft">Os termos mais usados, em linguagem simples. Cada um leva à etapa da trilha onde aparece.</p>
+    <h1 class="flex items-center gap-3 text-3xl font-bold sm:text-5xl"><Icon name="dictionary" class="text-butter-600" /> Glossário</h1>
+    <p class="mt-3 max-w-2xl text-lg text-ink-soft">Termos usados no guia, explicados de forma simples. Cada um leva à etapa em que aparece.</p>
     <label class="mt-5 block max-w-md text-sm font-bold">Buscar termo
       <input id="q" type="search" placeholder="ex.: veto, quociente, pétrea…" class="mt-1 w-full rounded-full border border-line bg-white px-5 py-3 text-base" />
     </label>
@@ -54,7 +55,7 @@ const ordenados = termos.sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
       <div class="card !p-4" data-t={`${t} ${d}`.toLowerCase()}>
         <dt class="font-display text-lg font-bold">{t}</dt>
         <dd class="mt-1 text-sm text-ink-soft">{d}</dd>
-        <dd class="mt-2"><a href={href(slug)} class="chip bg-lilac-100 text-lilac-600">Ver na trilha →</a></dd>
+        <dd class="mt-2"><a href={href(slug)} class="chip bg-lilac-100 text-lilac-600">Ver na trilha <Icon name="arrow_forward" /></a></dd>
       </div>
     ))}
   </dl>

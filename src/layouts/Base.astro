@@ -1,10 +1,11 @@
 ---
 import '../styles/global.css';
 import { trilha, href } from '../data/trilha';
+import Icon from '../components/Icon.astro';
 
 interface Props { title: string; description?: string; slug?: string }
 const { title, description = 'Guia interativo e didático do sistema político brasileiro: do básico ao avançado.', slug = '' } = Astro.props;
-const fullTitle = slug ? `${title} · Política BR sem mistério` : title;
+const fullTitle = slug ? `${title} · Sistema Político do Brasil` : title;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -16,6 +17,7 @@ const fullTitle = slug ? `${title} · Política BR sem mistério` : title;
     <link rel="icon" href={`${href()}favicon.svg`} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen antialiased" data-slug={slug}>
@@ -23,23 +25,24 @@ const fullTitle = slug ? `${title} · Política BR sem mistério` : title;
     <header class="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <a href={href()} class="flex items-center gap-2 font-display text-lg font-bold">
-          <span class="grid h-9 w-9 place-items-center rounded-2xl bg-lilac-100 text-lg">🇧🇷</span>
-          <span>Política BR <span class="text-lilac-600">sem mistério</span></span>
+          <span class="grid h-9 w-9 place-items-center rounded-2xl bg-lilac-100 text-lilac-600"><Icon name="account_balance" /></span>
+          <span>Sistema Político <span class="text-lilac-600">do Brasil</span></span>
         </a>
         <nav class="flex items-center gap-1 text-sm font-bold" aria-label="Principal">
           <details class="relative">
-            <summary class="btn list-none">Trilha ▾</summary>
+            <summary class="btn list-none"><Icon name="route" /> Trilha <Icon name="expand_more" /></summary>
             <ul class="card absolute right-0 mt-2 w-72 space-y-1 p-2">
               {trilha.map((e) => (
                 <li>
                   <a href={href(e.slug)} class="flex items-center gap-2 rounded-2xl px-3 py-2 hover:bg-lilac-50" aria-current={e.slug === slug ? 'page' : undefined}>
-                    <span>{e.emoji}</span><span class="flex-1">{e.titulo}</span><span class="hidden text-mint-600" data-done={e.slug}>✓</span>
+                    <Icon name={e.icon} class="text-lilac-600" /><span class="flex-1">{e.titulo}</span><span class="hidden text-mint-600" data-done={e.slug}><Icon name="check_circle" fill /></span>
                   </a>
                 </li>
               ))}
             </ul>
           </details>
-          <a href={href('glossario')} class="rounded-full px-3 py-2 hover:bg-lilac-50">Glossário</a>
+          <a href={href('glossario')} class="hidden rounded-full px-3 py-2 hover:bg-lilac-50 sm:inline">Glossário</a>
+          <a href={href('validacao')} class="hidden rounded-full px-3 py-2 hover:bg-lilac-50 sm:inline">Conferência</a>
           <a href={href('fontes')} class="rounded-full px-3 py-2 hover:bg-lilac-50">Fontes</a>
         </nav>
       </div>
@@ -51,7 +54,7 @@ const fullTitle = slug ? `${title} · Política BR sem mistério` : title;
 
     <footer class="border-t border-line bg-white/60">
       <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-ink-soft">
-        <p>Conteúdo educativo baseado na pesquisa “Arquitetura Institucional e Dinâmica Política do Brasil” e nas fontes oficiais citadas em <a class="font-bold underline" href={href('fontes')}>Fontes</a>. Não substitui consulta jurídica.</p>
+        <p>Conteúdo educativo, baseado na pesquisa “Arquitetura Institucional e Dinâmica Política do Brasil” e conferido com fontes oficiais (veja <a class="font-bold underline" href={href('validacao')}>Conferência</a> e <a class="font-bold underline" href={href('fontes')}>Fontes</a>). Não substitui orientação jurídica.</p>
       </div>
     </footer>
 

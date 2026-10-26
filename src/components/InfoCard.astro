@@ -1,11 +1,12 @@
 ---
+import Icon from './Icon.astro';
 import { tones, type Tone } from '../lib/tones';
-interface Props { tone?: Tone; emoji?: string; title: string; tag?: string }
-const { tone = 'lilac', emoji, title, tag } = Astro.props;
+interface Props { tone?: Tone; icon?: string; title: string; tag?: string }
+const { tone = 'lilac', icon = 'info', title, tag } = Astro.props;
 const t = tones[tone];
 ---
 <article class="card h-full">
-  <div class={`grid h-12 w-12 place-items-center rounded-2xl text-2xl ${t.bg}`}>{emoji}</div>
+  <div class={`grid h-12 w-12 place-items-center rounded-2xl text-2xl ${t.bg} ${t.text}`}><Icon name={icon} /></div>
   {tag && <span class={`chip mt-3 ${t.chip}`}>{tag}</span>}
   <h3 class="mt-3 text-xl font-bold">{title}</h3>
   <div class="prose-p mt-2 text-sm [&>*:last-child]:mb-0"><slot /></div>

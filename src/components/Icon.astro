@@ -1,0 +1,5 @@
+---
+interface Props { name: string; class?: string; fill?: boolean }
+const { name, class: cls = '', fill = false } = Astro.props;
+---
+<span class={`material-symbols-rounded ${fill ? 'icon-fill' : ''} ${cls}`} aria-hidden="true">{name}</span>
